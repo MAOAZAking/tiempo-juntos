@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Árbol de Amor Animado</title>
+    <!-- Autoría y derechos -->
+    <meta name="author" content="Zero">
+    <meta name="copyright" content="Zero - Código libre no comercial">
+    <meta name="description" content="Árbol de Amor Animado: una sorpresa interactiva y romántica para dedicar a tu pareja o ser querido. Código libre para uso personal, educativo o de inspiración.">
+    <meta name="keywords" content="amor, sorpresa, romántico, dedicatoria, animación, árbol, corazones, pareja, aniversario, regalo digital">
+    <meta name="robots" content="index, follow">
+    <!-- Estilos -->
+    <link rel="stylesheet" href="Css/style.css">
+    <link rel="stylesheet" href="Css/style.mobile.css" media="only screen and (max-width: 600px)">
+    <style>
+      #start-screen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: black;
+        color: white;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.8rem;
+        font-family: 'Courier New', Courier, monospace;
+        z-index: 10000; /* Muy alto para estar encima de todo */
+        cursor: pointer;
+        text-align: center;
+        padding: 20px;
+      }
+      #main-content {
+        display: none; /* Oculto inicialmente */
+      }
+
+      .tree-container {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 400px;
+        height: 400px;
+        z-index: 2;
+      }
+      .animated-heart {
+        transform-origin: center;
+        animation: beat 1s infinite;
+      }
+      @keyframes beat {
+        0%, 100% { transform: scale(1); }
+        20% { transform: scale(1.1); }
+        40% { transform: scale(0.95); }
+        60% { transform: scale(1.08); }
+        80% { transform: scale(1); }
+      }
+      body {
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background: #fcfcfc;
+}
+
+.red-text {
+  color: red;
+  position: relative;
+  font-weight: bold;
+  display: inline-block;
+  font-size: 25px; /* Tamaño del texto "Para:" */
+}
+
+.red-text::before {
+  content: "Para:"; /* El mismo texto que el de .red-text */
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;  /* Coloca el contorno detrás del texto original */
+  color: black;  /* El borde será negro */
+  font-weight: bold; /* Asegura que el borde se vea con el mismo grosor */
+  font-size: 25px; /* Mantiene el tamaño del texto duplicado igual al original */
+  -webkit-text-stroke: 3px black;  /* Añade un borde negro alrededor del texto duplicado */
+}
+
+.texto-resaltado{
+  font-weight: bold;
+  font-size: 20px;
+}
+
+/* Para los emojis */
+.emoji-border {
+  position: relative;
+  font-size: 20px; /* Tamaño del emoji */
+  color: red; /* Color original del emoji */
+  display: inline-block;
+  z-index: 1;
+}
+
+.emoji-border::before {
+  content: attr(data-emoji); /* Usamos el mismo emoji que en el contenido original */
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1; /* Coloca el contorno detrás del emoji */
+  font-size: 20px; /* Mantiene el tamaño del emoji igual al original */
+  color: black; /* El duplicado será negro */
+  transform: scale(1); /* Hacemos el duplicado un poco más grande para que se vea como un borde */
+}
+svg {
+    width: 100px;
+    height: 100px;
+}
+.emoji {
+    font-size: 20px;
+}
+.emoji-container {
+    display: inline-block;
+    margin: 10px;
+    position: relative;
+}
+.emoji-container svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: scale(1.3);
+    z-index: -1;
+}
+.emoji-border {
+    font-size: 20px; /* tamaño del emoji */
+    color: transparent; /* Hacemos el emoji transparente para poner el borde */
+    text-shadow: 0 0 5px black, 0 0 10px black, 0 0 15px black; /* Sombra que simula el borde */
+}
+
+
+#fireworks-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: block;
+    z-index: 1;
+    pointer-events: none;
+}
+
+#center-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 5rem;
+    color: #e60026;
+    font-family: 'Arial Black', Arial, sans-serif;
+    text-shadow: 2px 2px 8px #ffb3b3;
+    z-index: 2;
+    letter-spacing: 0.5rem;
+    user-select: none;
+    display: flex;
+    gap: 0.5rem;
+    pointer-events: none;
+}
+
+.letter {
+    opacity: 0;
+    transition: opacity 0.5s;
+}
+
+.tree-container {
+  /* Asegura que el contenedor tenga el nuevo tamaño */
+  width: 520px !important;
+  height: 520px !important;
+  /* Centrado absoluto */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+}
+
+.tree-container svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.tree-container svg path {
+  transition: fill-opacity 0.5s, stroke-dashoffset 1.2s;
+}
+
+.tree-container svg.move-and-scale {
+  transition: transform 1.2s cubic-bezier(.77,0,.18,1);
+  transform: translateX(280px) scale(1.35);
+}
+
+.dedication-text {
+  text-align: left;
+  position: absolute;
+  top: 50%;
+  left: 3%;
+  right: auto;
+  transform: translateY(-50%);
+  min-width: 320px;
+  max-width: 600px;
+  width: 60rem;
+  font-size: 1.5rem;
+  color: #050505;
+  font-family: 'Courier New', Courier, monospace;
+  white-space: pre-line; /* Permite saltos de línea automáticos y respeta los \n del texto */
+  z-index: 3;
+  opacity: 0;
+  pointer-events: auto;
+  max-height: 90vh;
+  overflow-y: auto; /* Mantenido para scroll vertical si el contenido excede max-height */
+  padding: 1em 1.5em;
+  background: rgba(255,255,255,0.92);
+  border-radius: 0.7em;
+  box-shadow: 0 2px 16px #e6002611;
+  /* Permite que la caja crezca en altura y ancho */
+  transition: max-width 0.4s, min-width 0.4s, width 0.4s;
+}
+
+.dedication-text.typing {
+  opacity: 1;
+  animation: fadeInText 0.6s;
+}
+
+@keyframes fadeInText {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+#floating-objects {
+  position: fixed;
+  left: 0; top: 0;
+  width: 100vw; height: 100vh;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.floating-petal {
+  position: absolute;
+  will-change: transform, opacity;
+  opacity: 0.85;
+  pointer-events: none;
+  width: 24px; height: 32px;
+  background: radial-gradient(ellipse at 60% 30%, #ffd6e0 60%, #ff69b4 100%);
+  border-radius: 60% 40% 60% 40% / 60% 60% 40% 40%;
+}
+
+.signature {
+  /* Cambia posición absoluta a relativa y pon margen arriba */
+  position: relative;
+  top: auto;
+  left: auto;
+  bottom: auto;
+  margin-top: 1.5em;
+  margin-left: 0;
+  display: block;
+  font-family: 'Dancing Script', 'Pacifico', cursive, sans-serif;
+  font-size: 2.2rem;
+  color: #e60026;
+  opacity: 0;
+  z-index: 5;
+  white-space: pre;
+  pointer-events: none;
+  transition: opacity 0.7s;
+}
+
+.signature.visible {
+  opacity: 1;
+  animation: signature-draw 2.2s steps(24) forwards;
+}
+
+@keyframes signature-draw {
+  from { clip-path: inset(0 100% 0 0); }
+  to   { clip-path: inset(0 0 0 0); }
+}
+
+.countdown {
+  position: fixed;
+  left: 50%;
+  bottom: 3%;
+  transform: translateX(-50%);
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 1.6rem;
+  color: #333;
+  background: #fff8;
+  padding: 0.4em 1em;
+  border-radius: 1em;
+  z-index: 6;
+  box-shadow: 0 2px 8px #e6002611;
+  pointer-events: none;
+  letter-spacing: 0.05em;
+  min-width: 220px;
+  text-align: center;
+  transition: opacity 0.8s cubic-bezier(.77,0,.18,1), transform 0.8s cubic-bezier(.77,0,.18,1);
+  opacity: 0;
+  transform: translateX(-50%) translateY(30px);
+}
+
+.countdown.visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Responsivo para móviles: la caja ocupa casi todo el ancho arriba del árbol */
+@media (max-width: 700px) {
+  .dedication-text {
+    left: 50%;
+    right: auto;
+    top: 8%;
+    transform: translateX(-50%) translateY(0);
+    min-width: 0;
+    max-width: 95vw;
+    width: 95vw;
+    font-size: 1.1rem;
+    padding: 0.7em 0.7em 0.7em 0.7em;
+  }
+  .signature {
+    font-size: 1.3rem;
+  }
+}
+
+    </style>
+</head>
+<body>
+    <div id="start-screen">
+      Da clic para ver el contenido
+    </div>
+
+    <div id="main-content">
+      <div id="floating-objects"></div>
+      <div class="dedication-text" id="dedication-text">
+        <div class="signature" id="signature"></div>
+      </div>
+      <div class="countdown" id="countdown"></div>
+      <div class="tree-container" id="tree-container"></div>
+    </div>
+    <audio id="bg-music" preload="auto" loop> <!-- Eliminado autoplay -->
+        <source src="https://www.dropbox.com/scl/fi/gzoswtn2qeo2z4j1lussz/Ed-Sheeran-Perfect.mp3?rlkey=f1naou868v0emvlz13urslmpb&st=i98bye0i&dl=1" type="audio/mp3"> <!-- CAMBIA ESTO por el nombre de tu archivo -->
+    </audio>
+    <!-- <audio src="Music/Ed Sheeran - Perfect.mp3" id="bg-music" preload="auto"></audio> -->
+    <script>
+      //© Zero - Código libre no comercial
+
+
+const svgText = `<?xml version="1.0" encoding="iso-8859-1"?>
+<!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
+<svg height="800px" width="800px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
+	 viewBox="0 0 512 512" xml:space="preserve">
+<!-- Se eliminó el círculo de fondo -->
+<!-- <circle style="fill:#FFD15D;" cx="256" cy="256" r="256"/> -->
+<!-- Se eliminó el path de fondo -->
+<!-- <path style="fill:#F9B54C;" d="M271.694,511.507c123.938-7.497,224.068-103.162,238.501-225.102L351.854,128.062l-12.657,4.834 ..."/> -->
+<path style="fill:#734B46;" d="M315.475,225.868c0,0-57.165,80.079,0,210.472H196.525c57.165-130.393,0-210.472,0-210.472h23.387
+	l17.008,48.94l6.378-95.713h17.717l9.921,70.158l42.52-46.771L315.475,225.868z"/>
+<path style="fill:#5B3836;" d="M315.475,225.868l-2.02-23.385l-42.52,46.771l-9.921-70.158h-5.587v257.243h60.049
+	C258.31,305.945,315.475,225.868,315.475,225.868z"/>
+<path style="fill:#FC6F58;" d="M199.973,154.215c0-11.807,9.456-21.378,21.118-21.378c11.662,0,21.118,9.571,21.118,21.378
+	c0-11.807,9.456-21.378,21.118-21.378c11.662,0,21.118,9.571,21.118,21.378c0,20.442-42.236,44.896-42.236,44.896
+	S199.973,175.811,199.973,154.215z"/>
+
+<!-- DE AQUI EN ADELANTE SON LAS HOJAS EN FORMA DE CORAZÓN -->
+<g>
+	<path style="fill:#F4E3C3;" d="M145.627,222.42c-7.697-8.954-6.766-22.375,2.077-29.979c8.844-7.602,22.254-6.508,29.951,2.446
+		c-7.697-8.954-6.766-22.375,2.077-29.979c8.844-7.602,22.254-6.508,29.951,2.446c13.326,15.503-2.762,61.578-2.762,61.578
+		S159.704,238.795,145.627,222.42z"/>
+	<path style="fill:#F4E3C3;" transform="translate(-10,0)" d="M280.007,112.287c5.575-10.409,18.429-14.383,28.71-8.875c10.281,5.506,14.096,18.408,8.523,28.817
+		c5.575-10.409,18.429-14.383,28.71-8.875c10.281,5.506,14.096,18.408,8.523,28.817c-9.652,18.022-58.428,19.635-58.428,19.635
+		S269.812,131.324,280.007,112.287z"/>
+	<path style="fill:#B74F39;" transform="translate(0,-70)" d="M270.917,171.89c-2.131-7.099,1.831-14.558,8.849-16.662c7.018-2.103,14.433,1.946,16.563,9.045
+		c-2.131-7.099,1.831-14.558,8.849-16.662c7.018-2.103,14.433,1.946,16.563,9.045c3.687,12.29-17.311,34.607-17.311,34.607
+		S274.813,184.872,270.917,171.89z"/>
+	<path style="fill:#F4E3C3;" d="M290.756,208.879c7.432-9.173,20.806-10.657,29.87-3.315c9.064,7.342,10.388,20.73,2.955,29.903
+		c7.432-9.173,20.806-10.657,29.87-3.315c9.064,7.342,10.388,20.73,2.955,29.903c-12.869,15.882-61.087,8.292-61.087,8.292
+		S277.163,225.656,290.756,208.879z"/>
+</g>
+<path style="fill:#FC6F58;" transform="translate(170,-80)" d="M143.463,198.958c-2.131-7.099,1.831-14.558,8.849-16.662c7.018-2.103,14.433,1.946,16.563,9.045
+	c-2.131-7.099,1.831-14.558,8.849-16.662s14.433,1.946,16.563,9.045c3.687,12.29-17.311,34.607-17.311,34.607
+	S147.359,211.94,143.463,198.958z"/>
+<path style="fill:#F4E3C3;" d="M147.854,129.436c-2.131-7.099,1.831-14.558,8.849-16.662c7.018-2.103,14.433,1.946,16.563,9.045
+	c-2.131-7.099,1.831-14.558,8.849-16.662c7.018-2.103,14.433,1.946,16.563,9.045c3.687,12.29-17.311,34.607-17.311,34.607
+	S151.749,142.419,147.854,129.436z"/>
+<g>
+	<path style="fill:#C1321F;" d="M228.131,110.166c-2.131-7.099,1.831-14.558,8.849-16.662c7.018-2.103,14.433,1.946,16.563,9.045
+		c-2.131-7.099,1.831-14.558,8.849-16.662c7.018-2.103,14.433,1.946,16.563,9.045c3.687,12.29-17.311,34.607-17.311,34.607
+		S232.027,123.151,228.131,110.166z"/>
+
+	<path style="fill:#C1321F;" transform="translate(180,-120)" d="M162.864,292.717c-6.87-2.782-10.206-10.542-7.452-17.33c2.753-6.789,10.554-10.035,17.422-7.252
+		c-6.87-2.782-10.206-10.542-7.452-17.33c2.753-6.789,10.554-10.035,17.422-7.252c11.893,4.818,16.15,35.166,16.15,35.166
+		S175.428,297.806,162.864,292.717z"/>
+	<path style="fill:#C1321F;" d="M199.687,223.944c-2.131-7.099,1.831-14.558,8.849-16.662c7.018-2.103,14.433,1.946,16.563,9.045
+		c-2.131-7.099,1.831-14.558,8.849-16.662s14.433,1.946,16.563,9.045c3.687,12.29-17.311,34.607-17.311,34.607
+		S203.583,236.928,199.687,223.944z"/>
+	<path style="fill:#C1321F;" transform="translate(-180,-40)" d="M357.981,169.91c5.665-4.779,14.086-4.11,18.806,1.491c4.722,5.601,3.956,14.015-1.71,18.794
+		c5.665-4.779,14.086-4.11,18.806,1.491c4.722,5.601,3.956,14.015-1.71,18.794c-9.809,8.273-38.64-2.117-38.64-2.117
+		S347.619,178.65,357.981,169.91z"/>
+
+	<path style="fill:#AE6F5F;" transform="translate(-177,-20)" d="M357.917,121.89c-2.131-7.099,1.831-14.558,8.849-16.662c7.018-2.103,14.433,1.946,16.563,9.045
+		c-2.131-7.099,1.831-14.558,8.849-16.662c7.018-2.103,14.433,1.946,16.563,9.045c3.687,12.29-17.311,34.607-17.311,34.607
+		S361.813,134.872,357.917,121.89z"/>
+</g>
+<g>
+	<!-- Corazones adicionales con más separación y variedad de colores -->
+	<!-- <path style="fill:#F8B4A7;" transform="translate(-60,-60)" d="M205.123,225.943c-2.131-7.099,1.831-14.558,8.849-16.662c7.018-2.103,14.433,1.946,16.563,9.045
+		c-2.131-7.099,1.831-14.558,8.849-16.662s14.433,1.946,16.563,9.045c3.687,12.29-17.311,34.607-17.311,34.607
+		S209.019,238.925,205.123,225.943z"/> -->
+<path style="fill:#F8B4A7;" transform="scale(-1,1) translate(-527,-30)" d="M357.981,169.91c5.665-4.779,14.086-4.11,18.806,1.491c4.722,5.601,3.956,14.015-1.71,18.794c5.665-4.779,14.086-4.11,18.806,1.491c4.722,5.601,3.956,14.015-1.71,18.794c-9.809,8.273-38.64-2.117-38.64-2.117S347.619,178.65,357.981,169.91z"/>
+	<path style="fill:#F1C0B3;" transform="translate(-60,20)" d="M218.153,195.375c5.575-10.409,18.429-14.383,28.71-8.875c10.281,5.506,14.096,18.408,8.523,28.817
+		c5.575-10.409,18.429-14.383,28.71-8.875c10.281,5.506,14.096,18.408,8.523,28.817c-9.652,18.022-58.428,19.635-58.428,19.635
+		S207.268,204.674,218.153,195.375z"/>
+	<path style="fill:#E8A8A1;" transform="translate(-65,-10)" d="M257.917,141.89c-2.131-7.099,1.831-14.558,8.849-16.662c7.018-2.103,14.433,1.946,16.563,9.045
+		c-2.131-7.099,1.831-14.558,8.849-16.662c7.018-2.103,14.433,1.946,16.563,9.045c3.687,12.29-17.311,34.607-17.311,34.607
+		S261.813,154.872,257.917,141.89z"/>
+<path style="fill:#FF9C8B;" transform="translate(0,-50)" d="M248.123,241.943c-2.131-7.099,1.831-14.558,8.849-16.662c7.018-2.103,14.433,1.946,16.563,9.045c-2.131-7.099,1.831-14.558,8.849-16.662s14.433,1.946,16.563,9.045c3.687,12.29-17.311,34.607-17.311,34.607S252.019,254.925,248.123,241.943z"/>
+	<path style="fill:#E58983;" d="M318.153,180.375c5.575-10.409,18.429-14.383,28.71-8.875c10.281,5.506,14.096,18.408,8.523,28.817
+		c5.575-10.409,18.429-14.383,28.71-8.875c10.281,5.506,14.096,18.408,8.523,28.817c-9.652,18.022-58.428,19.635-58.428,19.635
+		S307.268,189.674,318.153,180.375z"/>
+
+</g>
+
+<path style="fill:#FC6F58;" d="M292.404,176.175c3.415-6.577,11.452-9.173,17.953-5.798s9,11.443,5.587,18.02
+	c3.415-6.577,11.452-9.173,17.953-5.797c6.501,3.375,9.001,11.443,5.587,18.02c-5.913,11.388-36.523,12.786-36.523,12.786
+	S286.158,188.202,292.404,176.175z"/>
+</svg>`;
+
+let mainExperienceStarted = false;
+
+function startMainExperience() {
+  if (mainExperienceStarted) return;
+  mainExperienceStarted = true;
+
+  const container = document.getElementById('tree-container');
+  container.innerHTML = svgText; // Insertar el SVG directamente en el contenedor
+  const svg = container.querySelector('svg');
+  if (!svg) return;
+
+  // Animación de "dibujo" para todos los paths
+  const allPaths = Array.from(svg.querySelectorAll('path'));
+  allPaths.forEach(path => {
+    path.style.stroke = '#222';
+    path.style.strokeWidth = '2.5';
+    path.style.fillOpacity = '0';
+    const length = path.getTotalLength();
+    path.style.strokeDasharray = length;
+    path.style.strokeDashoffset = length;
+    path.style.transition = 'none';
+  });
+
+  // Forzar reflow y luego animar
+  setTimeout(() => {
+    allPaths.forEach((path, i) => {
+      path.style.transition = `stroke-dashoffset 1.2s cubic-bezier(.77,0,.18,1) ${i * 0.08}s, fill-opacity 0.5s ${0.9 + i * 0.08}s`;
+      path.style.strokeDashoffset = 0;
+      setTimeout(() => {
+        path.style.fillOpacity = '1';
+        path.style.stroke = '';
+        path.style.strokeWidth = '';
+      }, 1200 + i * 80);
+    });
+
+    // Después de la animación de dibujo, mueve y agranda el SVG
+    const totalDuration = 1200 + (allPaths.length - 1) * 80 + 500;
+    setTimeout(() => {
+      svg.classList.add('move-and-scale');
+
+      // Mostrar texto con efecto typing
+      setTimeout(() => {
+        showDedicationText(); // Función de máquina de escribir para dedicatoria
+        // Mostrar pétalos flotando
+        startFloatingObjects(); // Función para los objetos flotantes
+        // Mostrar cuenta regresiva
+        showCountdown(); // Función para la cuenta regresiva
+      }, 1200); // Tiempo para agrandar el SVG
+    }, totalDuration);
+  }, 50);
+
+  // Selecciona los corazones (formas rojas)
+  const heartPaths = allPaths.filter(el => {
+    const style = el.getAttribute('style') || '';
+    return style.includes('#FC6F58') || style.includes('#C1321F');
+  });
+  heartPaths.forEach(path => {
+    path.classList.add('animated-heart');
+  });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const startScreen = document.getElementById('start-screen');
+  const mainContent = document.getElementById('main-content');
+
+  function initExperience() {
+    if (startScreen) startScreen.style.display = 'none';
+    if (mainContent) mainContent.style.display = 'block';
+    
+    startMainExperience(); 
+    
+    // Esta llamada asegura que la música intente reproducirse justo después de que se descarte la pantalla de inicio.
+    // playBackgroundMusic tiene su propia bandera 'musicInitialized'.
+    playBackgroundMusic(); 
+  }
+
+  if (startScreen) {
+    startScreen.addEventListener('click', initExperience, { once: true });
+    startScreen.addEventListener('touchstart', initExperience, { once: true, passive: true });
+  } else {
+    // Fallback si no se encuentra start-screen
+    initExperience();
+  }
+});
+
+// Efecto máquina de escribir para el texto de dedicatoria (seguidores)
+function showDedicationText() {
+  const dedicationText = document.getElementById('dedication-text');
+  let text = "¡Gracias por ser parte de esta experiencia!";
+  let i = 0;
+
+  function typeWriter() {
+    if (i < text.length) {
+      dedicationText.innerHTML += text.charAt(i);
+      i++;
+      setTimeout(typeWriter, 100);
+    }
+  }
+
+  typeWriter();
+}
+
+// Funciones adicionales de animación
+function startFloatingObjects() {
+  // Aquí va el código para los objetos flotantes (pueden ser hojas o partículas)
+  console.log("Los objetos están flotando.");
+}
+
+function showCountdown() {
+  // Aquí va el código para mostrar la cuenta regresiva
+  const countdownElement = document.getElementById('countdown');
+  let count = 5;
+  countdownElement.innerHTML = count;
+  
+  const interval = setInterval(() => {
+    count--;
+    countdownElement.innerHTML = count;
+    if (count === 0) {
+      clearInterval(interval);
+      countdownElement.innerHTML = "¡Listo!";
+    }
+  }, 1000);
+}
+
+function playBackgroundMusic() {
+  const audio = new Audio('path_to_your_background_music.mp3');
+  audio.loop = true;
+  audio.play();
+  console.log("La música de fondo está sonando.");
+}
+
+// Función para obtener parámetros de la URL (si los necesitas)
+function getURLParam(name) {
+  const url = new URL(window.location.href);
+  return url.searchParams.get(name);
+}
+
+// Efecto máquina de escribir para el texto de dedicatoria (seguidores)
+function getURLParam(name) {
+  const url = new URL(window.location.href);
+  return url.searchParams.get(name);
+}
+
+function showDedicationText() { 
+  let text = getURLParam('text');
+  
+  if (!text) {
+    // Ahora agregamos la propiedad data-emoji para crear el duplicado
+    text = `<span class="red-text">Para:</span><span class="emoji-border" data-emoji="🩵">🩵</span><span class="emoji-border" data-emoji="😍">😍</span><span class="texto-resaltado"> Mi Amorcito Lindo </span><span class="emoji-border" data-emoji="😘">😘</span><span class="emoji-border" data-emoji="🤍">🤍</span>\n
+    No hay distancia que nos separe, ni reloj que el fin marque;
+
+    mi amor por ti sigue intacto, aunque en silencio yo me encuentre aquí.
+    
+    Te amo en cada rincón del día, en cada paso, en cada instante,
+    
+    aunque tus palabras me eviten, aunque tu mirada se haga distante.
+
+
+    
+    Me duele el alma verte distante,
+    
+    como si no importara el amor que por ti arde,
+    
+    y aunque mis palabras se ahogan en el aire,
+    
+    mi corazón no deja de llamarte.
+
+
+    
+    No recibir un "hola", ni saber de ti,
+    
+    me hace sentir vacío, me duele muy dentro… ¡SÍ, AQUÍ!👉🏼💔
+    
+    Pero, aunque el silencio me consume y la ausencia me reclama,
+    
+    mi amor por ti no decae; este amor nunca se acaba.
+
+    Porque en mi mente sigues presente,
+    
+    aunque a veces no lo demuestre,
+    
+    yo te sigo eligiendo, aun en la agonía de cada palpitar,
+    
+    pues mi amor no pierde la calma, no deja de luchar.
+
+
+
+    Quizá no entiendas lo que me duele,
+    
+    quizá no sepas que en mi alma duele el olvido,
+    
+    pero en mi corazón sigues siendo mi todo,
+    
+    y mi amor por ti nunca será un olvido..`;
+  } else {
+    text = decodeURIComponent(text).replace(/\\n/g, '\n');
+  }
+/////TEXTO PRIMARIO
+// No hay distancia que me aparte,
+//         ni reloj que me limite;
+//         te amo en cada instante,
+//         aunque el abrazo se evite.
+
+//         Y aunque me duela y se me parta el alma,
+//         porque me tratas como si no te importara,
+//         no recibo de ti un hola, ni un como estas,
+//         el no poderte hablar me lastima,
+//         me hace sentir desmayar y querer renunciar,
+//         pero mi amor no pierde la calma,
+//         ni deja de luchar más.
+
+//         Porque sigues en mi mente,
+//         aunque a veces no lo ves,
+//         yo te elijo, fiel y fuerte,
+//         una y otra y otra vez.
+  const container = document.getElementById('dedication-text');
+  container.classList.add('typing');
+  container.setAttribute('data-text', text);  // Asignamos el texto al atributo data-text
+  let i = 0;
+
+  function type() {
+    if (i <= text.length) {
+      container.innerHTML = text.slice(0, i); // Usamos innerHTML para procesar el HTML
+      i++;
+      setTimeout(type, text[i - 2] === '\n' ? 350 : 45);
+    } else {
+      // Al terminar el typing, mostrar la firma animada
+      setTimeout(showSignature, 600);
+    }
+  }
+
+  type();
+}
+
+// Firma manuscrita animada
+function showSignature() {
+  // Cambia para buscar la firma dentro del contenedor de dedicatoria
+  const dedication = document.getElementById('dedication-text');
+  let signature = dedication.querySelector('#signature');
+  if (!signature) {
+    signature = document.createElement('div');
+    signature.id = 'signature';
+    signature.className = 'signature';
+    dedication.appendChild(signature);
+  }
+  let firma = getURLParam('firma');
+  signature.textContent = firma ? decodeURIComponent(firma) : "Con muchisimo codigo y amor, DE: Tu Ángel";
+  signature.classList.add('visible');
+}
+
+
+
+// Controlador de objetos flotantes
+function startFloatingObjects() {
+  const container = document.getElementById('floating-objects');
+  let count = 0;
+  function spawn() {
+    let el = document.createElement('div');
+    el.className = 'floating-petal';
+    // Posición inicial
+    el.style.left = `${Math.random() * 90 + 2}%`;
+    el.style.top = `${100 + Math.random() * 10}%`;
+    el.style.opacity = 0.7 + Math.random() * 0.3;
+    container.appendChild(el);
+
+    // Animación flotante
+    const duration = 6000 + Math.random() * 4000;
+    const drift = (Math.random() - 0.5) * 60;
+    setTimeout(() => {
+      el.style.transition = `transform ${duration}ms linear, opacity 1.2s`;
+      el.style.transform = `translate(${drift}px, -110vh) scale(${0.8 + Math.random() * 0.6}) rotate(${Math.random() * 360}deg)`;
+      el.style.opacity = 0.2;
+    }, 30);
+
+    // Eliminar después de animar
+    setTimeout(() => {
+      if (el.parentNode) el.parentNode.removeChild(el);
+    }, duration + 2000);
+
+    // Generar más objetos
+    if (count++ < 32) setTimeout(spawn, 350 + Math.random() * 500);
+    else setTimeout(spawn, 1200 + Math.random() * 1200);
+  }
+  spawn();
+}
+
+// // Cuenta regresiva o fecha especial
+// function showCountdown() {
+//   const container = document.getElementById('countdown');
+  
+//   // Obtiene los parámetros start y event de la URL (si los hay)
+//   let startParam = getURLParam('start');
+//   let eventParam = getURLParam('event');
+  
+//   // Si no hay parámetro 'start', por defecto es el 23 de febrero de 2025 a las 3 PM
+//   let startDate = startParam ? new Date(startParam + 'T00:00:00') : new Date('2025-02-23T15:00:00');
+  
+//   // Si no hay parámetro 'event', por defecto es el 3 de agosto de 2025
+//   let eventDate = eventParam ? new Date(eventParam + 'T00:00:00') : new Date('2025-08-03T00:00:00');
+
+//   function update() {
+//     const now = new Date();  // Hora actual
+
+//     // Calcula la diferencia de tiempo entre la fecha actual y la fecha de inicio
+//     let diff = now - startDate;
+    
+//     // Si la fecha de inicio es en el futuro, mostramos el tiempo restante
+//     if (diff < 0) {
+//       let eventDiff = startDate - now;
+//       let eventDays = Math.max(0, Math.floor(eventDiff / (1000 * 60 * 60 * 24)));  // Días hasta la fecha de inicio
+//       let eventHours = Math.max(0, Math.floor((eventDiff / (1000 * 60 * 60)) % 24));  // Horas hasta la fecha de inicio
+//       let eventMinutes = Math.max(0, Math.floor((eventDiff / (1000 * 60)) % 60));  // Minutos hasta la fecha de inicio
+//       let eventSeconds = Math.max(0, Math.floor((eventDiff / 1000) % 60));  // Segundos hasta la fecha de inicio
+
+//       container.innerHTML =
+//         `Faltan para estar juntos: <b>${eventDays}d ${eventHours}h ${eventMinutes}m ${eventSeconds}s</b><br>` +
+//         `Nuestro aniversario: <b>${eventDays}d ${eventHours}h ${eventMinutes}m ${eventSeconds}s</b>`;
+//     } 
+//     else {
+//       // Si ya pasó la fecha de inicio, mostramos el tiempo transcurrido
+//       let days = Math.floor(diff / (1000 * 60 * 60 * 24));  // Días transcurridos
+//       let hours = Math.floor((diff / (1000 * 60 * 60)) % 24);  // Horas transcurridas
+//       let minutes = Math.floor((diff / (1000 * 60)) % 60);  // Minutos transcurridos
+//       let seconds = Math.floor((diff / 1000) % 60);  // Segundos transcurridos
+
+//       container.innerHTML =
+//         `Llevamos juntos: <b>${days}d ${hours}h ${minutes}m ${seconds}s</b><br>` +
+//         `Nuestro aniversario: <b>${eventDays}d ${eventHours}h ${eventMinutes}m ${eventSeconds}s</b>`;
+//     }
+
+//     // Hace visible el contenedor (en caso de que tuviera alguna animación o estilo)
+//     container.classList.add('visible');
+//   }
+
+//   update();  // Ejecuta inmediatamente al cargar la página
+//   setInterval(update, 1000);  // Actualiza cada segundo
+// }
+//////////////////////////////////////////////////////
+// function showCountdown() {
+//   const container = document.getElementById('countdown');
+  
+//   // Definir la fecha de destino: 30 de junio a las 2 PM
+//   const targetDate = new Date('2025-06-30T14:00:00');  // Fecha y hora destino
+
+//   function update() {
+//     const now = new Date();  // Hora actual
+//     let diff = targetDate - now;  // Diferencia de tiempo entre ahora y el 30 de junio a las 2 PM
+
+//     // Si la fecha ya pasó, mostramos un mensaje (por ejemplo: "El evento ya ocurrió")
+//     if (diff <= 0) {
+//       container.innerHTML = "¡La cuenta regresiva ha terminado!";
+//       container.classList.add('visible');
+//       return;
+//     }
+
+//     // Calcula la diferencia en días, horas, minutos y segundos
+//     let days = Math.floor(diff / (1000 * 60 * 60 * 24));  // Días restantes
+//     let hours = Math.floor((diff / (1000 * 60 * 60)) % 24);  // Horas restantes
+//     let minutes = Math.floor((diff / (1000 * 60)) % 60);  // Minutos restantes
+//     let seconds = Math.floor((diff / 1000) % 60);  // Segundos restantes
+
+//     // Actualiza el contenido del contenedor con el tiempo restante
+//     container.innerHTML =
+//       `Faltan: <b>${days}d ${hours}h ${minutes}m ${seconds}s</b> para el evento.`;
+
+//     // Hace visible el contenedor (en caso de que tuviera alguna animación o estilo)
+//     container.classList.add('visible');
+//   }
+
+//   update();  // Ejecuta inmediatamente al cargar la página
+//   setInterval(update, 1000);  // Actualiza cada segundo
+// }
+///////////////////////////////////////////////////////////////////////////////////////////////////
+function showCountdown() {
+  const container = document.getElementById('countdown');
+  
+  // Fecha de inicio: 23 de febrero de 2025 a las 3:30 PM
+  const startDate = new Date('2025-02-23T15:30:00');  // Fecha y hora de inicio
+
+  function update() {
+    const now = new Date();  // Hora actual
+    let diff = now - startDate;  // Diferencia de tiempo entre ahora y la fecha de inicio
+
+    // Si la fecha de inicio es en el pasado, mostramos el tiempo transcurrido
+    let days = Math.floor(diff / (1000 * 60 * 60 * 24));  // Días transcurridos
+    let hours = Math.floor((diff / (1000 * 60 * 60)) % 24);  // Horas transcurridas
+    let minutes = Math.floor((diff / (1000 * 60)) % 60);  // Minutos transcurridos
+    let seconds = Math.floor((diff / 1000) % 60);  // Segundos transcurridos
+
+    // Actualiza el contenido del contenedor con el tiempo transcurrido
+    container.innerHTML =
+      `Llevamos juntos: <b>${days}d ${hours}h ${minutes}m ${seconds}s</b>`;
+    
+    // Hace visible el contenedor (en caso de que tuviera alguna animación o estilo)
+    container.classList.add('visible');
+  }
+
+  update();  // Ejecuta inmediatamente al cargar la página
+  setInterval(update, 1000);  // Actualiza cada segundo
+}
+
+let musicInitialized = false; // Bandera para asegurar que la música se inicializa solo una vez
+
+// --- Música de fondo ---
+function playBackgroundMusic() {
+  if (musicInitialized) return; // Si ya se inicializó, no hacer nada más
+  musicInitialized = true;
+
+  const audio = document.getElementById('bg-music');
+  if (!audio) return;
+
+
+  // --- Opción archivo local por parámetro 'musica' ---
+  let musicaParam = getURLParam('musica');
+  if (musicaParam) {
+    // Decodifica y previene rutas maliciosas
+    musicaParam = decodeURIComponent(musicaParam).replace(/[^\w\d .\-]/g, '');
+    audio.src = 'Music/' + musicaParam;
+  } else {
+    // Si no hay parámetro 'musica' y el <source> usa un enlace directo (como Dropbox con dl=1),
+    // el navegador debería usarlo. Si fuera un archivo local y no hay parámetro,
+    // podrías establecer un audio.src = 'Music/default.mp3'; aquí.
+    // Para tu caso con Dropbox, el <source> es suficiente.
+  }
+
+  // --- Opción YouTube (solo mensaje de ayuda) ---
+  let youtubeParam = getURLParam('youtube');
+  if (youtubeParam) {
+    // Muestra mensaje de ayuda para descargar el audio
+    let helpMsg = document.getElementById('yt-help-msg');
+    if (!helpMsg) {
+      helpMsg = document.createElement('div');
+      helpMsg.id = 'yt-help-msg';
+      helpMsg.style.position = 'fixed';
+      helpMsg.style.right = '18px';
+      helpMsg.style.bottom = '180px';
+      helpMsg.style.background = 'rgba(255,255,255,0.95)';
+      helpMsg.style.color = '#e60026';
+      helpMsg.style.padding = '10px 16px';
+      helpMsg.style.borderRadius = '12px';
+      helpMsg.style.boxShadow = '0 2px 8px #e6002633';
+      helpMsg.style.fontSize = '1.05em';
+      helpMsg.style.zIndex = 100;
+      helpMsg.innerHTML = 'Para usar música de YouTube, descarga el audio (por ejemplo, usando y2mate, 4K Video Downloader, etc.), colócalo en la carpeta <b>Music</b> y usa la URL así:<br><br><code>?musica=nombre.mp3</code>';
+      document.body.appendChild(helpMsg);
+      setTimeout(() => { if(helpMsg) helpMsg.remove(); }, 15000);
+    }
+  }
+
+  let btn = document.getElementById('music-btn');
+  if (!btn) {
+    btn = document.createElement('button');
+    btn.id = 'music-btn'; // El texto se establecerá después del intento de play
+    btn.style.position = 'fixed';
+    btn.style.bottom = '18px';
+    btn.style.right = '18px';
+    btn.style.zIndex = 99;
+    btn.style.background = 'rgba(255,255,255,0.85)';
+    btn.style.border = 'none';
+    btn.style.borderRadius = '24px';
+    btn.style.padding = '10px 18px';
+    btn.style.fontSize = '1.1em';
+    btn.style.cursor = 'pointer';
+    document.body.appendChild(btn);
+  }
+  // Estado inicial del botón antes de intentar reproducir
+  if (btn && audio.paused) btn.textContent = '▶️ Música';
+
+  audio.volume = 0.7;
+  audio.loop = true;
+
+  const removeGeneralInteractionListeners = () => {
+    eventListenersConfig.forEach(listener => {
+      listener.target.removeEventListener(listener.type, listener.handler, listener.options || false);
+    });
+    listenersAttached = false;
+  };
+  let listenersAttached = false;
+
+  // Función para intentar reproducir y actualizar el botón
+  const tryPlayAudioAndUpdateButton = () => {
+    if (audio.paused) {
+      audio.play().then(() => {
+        if (btn) btn.textContent = '🔊 Música';
+        removeGeneralEventListeners(); // Usar el nombre correcto de la función
+      }).catch(() => {
+        if (btn) btn.textContent = '▶️ Música';
+        // Si falla incluso después de una interacción, los listeners generales ya se habrán ido.
+        // El usuario deberá usar el botón explícitamente.
+      });
+    } else {
+      // Si ya está sonando, asegurarse de que los listeners se hayan ido.
+      if (btn) btn.textContent = '🔊 Música'; // Asegurar que el botón refleje el estado
+      removeGeneralEventListeners(); // Usar el nombre correcto de la función
+    }
+  };
+
+  // Manejador para la primera interacción general del usuario (click, touch, scroll)
+  const handleGeneralInteraction = (event) => {
+    const target = event.target;
+    const treeContainer = document.getElementById('tree-container'); // El div que contiene el SVG
+    const dedicationTextEl = document.getElementById('dedication-text');
+
+    // 1. Ignorar si el evento es en el botón de música
+    if (event && btn && (event.target === btn || btn.contains(event.target))) {
+      return;
+    }
+
+    // 2. Condición para touchmove (ignorar si es un solo dedo deslizando sin ser scroll)
+    if (event.type === 'touchmove' && (!event.touches || event.touches.length < 2)) {
+        return;
+    }
+
+    // 3. Determinar si la interacción es válida para iniciar música
+    let interactionShouldAttemptPlay = false;
+    if (event.type === 'scroll') { // Scroll en la ventana
+        interactionShouldAttemptPlay = true;
+    } else if (event.type === 'click' || event.type === 'touchstart' || (event.type === 'touchmove' && event.touches && event.touches.length >=2) ) {
+        // Para click, touchstart, o zoom (touchmove con >=2 dedos)
+        if ((treeContainer && treeContainer.contains(target)) || // Dentro del SVG/su contenedor
+            (dedicationTextEl && dedicationTextEl.contains(target)) || // Dentro de la dedicatoria
+            target === document.body || target === document.documentElement) { // Clic/toque directo en body/html (fondo)
+            interactionShouldAttemptPlay = true;
+        }
+    }
+    
+    if (!interactionShouldAttemptPlay) {
+        return;
+    }
+
+    // Si es una interacción válida:
+    if (audio.paused) {
+      audio.play().then(() => {
+        if (btn) btn.textContent = '🔊 Música';
+        removeGeneralEventListeners(); 
+      }).catch(() => {
+        if (btn) btn.textContent = '▶️ Música';
+        removeGeneralEventListeners(); // Quitar listeners incluso si este intento falla, para que solo el botón quede.
+      });
+    } else {
+      // Si la música ya está sonando y la interacción no es el botón,
+      // no la pausamos, pero sí removemos los listeners generales.
+      removeGeneralEventListeners();
+    }
+  };
+
+  const eventListenersConfig = [
+    { target: document, type: 'click', handler: handleGeneralInteraction },
+    { target: document, type: 'touchstart', handler: handleGeneralInteraction, options: { passive: true } },
+    { target: window, type: 'scroll', handler: handleGeneralInteraction, options: { passive: true } },
+    { target: document, type: 'touchmove', handler: handleGeneralInteraction, options: { passive: true } },
+  ];
+
+  const addGeneralEventListeners = () => {
+    if (listenersAttached) return;
+    eventListenersConfig.forEach(listener => {
+      listener.target.addEventListener(listener.type, listener.handler, listener.options || false);
+    });
+    listenersAttached = true;
+  };
+
+  // Renombrar para claridad, ya que se usa arriba.
+  const removeGeneralEventListeners = removeGeneralInteractionListeners;
+
+  // Intentar reproducir inmediatamente (autoplay)
+  audio.play().then(() => {
+    // Autoplay fue "exitoso" según el navegador (la promesa se resolvió)
+    if (btn) btn.textContent = '🔊 Música';
+
+    // Comprobar si el audio realmente está sonando o si fue un "fallo silencioso"
+    // Damos un pequeño margen para que el estado de 'paused' se actualice si el navegador lo bloquea.
+    setTimeout(() => {
+      if (audio.paused) {
+        // Autoplay falló silenciosamente o el navegador lo pausó.
+        if (btn) btn.textContent = '▶️ Música'; // Corregir el estado del botón
+        addGeneralEventListeners();
+      } else {
+        // Autoplay realmente exitoso, los listeners generales no son necesarios
+        // y no se habrán añadido desde el .catch.
+        // La función handleFirstGeneralInteraction (si se llamara) se encargaría de removerlos.
+      }
+    }, 100); // Pequeño delay para verificar el estado real
+
+  }).catch(() => {
+    // Autoplay falló.
+    if (btn) btn.textContent = '▶️ Música';
+    // Adjuntar listeners para la primera interacción del usuario si el autoplay falla.
+    addGeneralEventListeners();
+  });
+
+  // Lógica del botón de música
+  if (btn) {
+    btn.onclick = () => {
+      if (audio.paused) {
+        audio.play().then(() => { // El botón también usa la misma lógica de reproducción y limpieza
+          if (btn) btn.textContent = '🔊 Música';
+          removeGeneralEventListeners();
+        }).catch(() => {
+          if (btn) btn.textContent = '▶️ Música';
+        });
+      } else {
+        audio.pause();
+        btn.textContent = '🔈 Música';
+      }
+    };
+  }
+}
+
+// Intentar reproducir la música lo antes posible (al cargar la página)
+    </script>
+</body>
+</html>
