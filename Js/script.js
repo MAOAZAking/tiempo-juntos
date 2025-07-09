@@ -1,17 +1,26 @@
-//© Zero - Código libre no comercial
+// Control de la experiencia principal
+let mainExperienceStarted = false;
 
+function startMainExperience() {
+  if (mainExperienceStarted) return;
+  mainExperienceStarted = true;
 
-// Cargar el SVG y animar los corazones
-fetch('Img/treelove-new.svg')
-  .then(res => res.text())
+  const container = document.getElementById('tree-container');
+
+  // Cargar el SVG desde la carpeta externa "Img/treelove-new"
+    // Cargar el SVG desde la carpeta externa "Img/treelove-new"
+fetch('/Img/treelove-new.svg')
+  .then(response => response.text()) // Convertir la respuesta en texto (el contenido del SVG)
   .then(svgText => {
-    const container = document.getElementById('tree-container');
-    container.innerHTML = svgText;
-    const svg = container.querySelector('svg');
-    if (!svg) return;
+    console.log(svgText); // Verifica si el SVG se está cargando correctamente
+    const container = document.getElementById('tree-container'); // Obtener el contenedor
+    container.innerHTML = svgText; // Insertar el SVG cargado dinámicamente en el contenedor
+
+    const svg = container.querySelector('svg'); // Buscar el elemento <svg>
+    if (!svg) return; // Si no hay un SVG, no hacer nada
 
     // Animación de "dibujo" para todos los paths
-    const allPaths = Array.from(svg.querySelectorAll('path'));
+    const allPaths = Array.from(svg.querySelectorAll('path')); // Obtener todos los paths del SVG
     allPaths.forEach(path => {
       path.style.stroke = '#222';
       path.style.strokeWidth = '2.5';
@@ -38,16 +47,15 @@ fetch('Img/treelove-new.svg')
       const totalDuration = 1200 + (allPaths.length - 1) * 80 + 500;
       setTimeout(() => {
         svg.classList.add('move-and-scale');
+
         // Mostrar texto con efecto typing
         setTimeout(() => {
-          showDedicationText();
-          // Mostrar petalos flotando
-          startFloatingObjects();
+          showDedicationText(); // Función de máquina de escribir para dedicatoria
+          // Mostrar pétalos flotando
+          startFloatingObjects(); // Función para los objetos flotantes
           // Mostrar cuenta regresiva
-          showCountdown();
-          // Iniciar música de fondo
-          playBackgroundMusic();
-        }, 1200); //Tiempo para agrandar el SVG
+          showCountdown(); // Función para la cuenta regresiva
+        }, 1200); // Tiempo para agrandar el SVG
       }, totalDuration);
     }, 50);
 
@@ -59,7 +67,137 @@ fetch('Img/treelove-new.svg')
     heartPaths.forEach(path => {
       path.classList.add('animated-heart');
     });
+  })
+  .catch(error => {
+    console.error("Error cargando el SVG:", error);
   });
+
+
+  // No hay cambios en el resto del flujo. Sigue igual:
+  // Sección de interacciones, petalos, cuenta regresiva, etc.
+}
+
+function showDedicationText() {
+  // Función para simular el efecto máquina de escribir
+  const dedicationText = "Gracias por ser parte de este momento tan especial.";
+  const dedicationElement = document.getElementById('dedication-text');
+  let index = 0;
+
+  function type() {
+    if (index < dedicationText.length) {
+      dedicationElement.innerHTML += dedicationText.charAt(index);
+      index++;
+      setTimeout(type, 100);
+    }
+  }
+
+  type();
+}
+
+function startFloatingObjects() {
+  // Función para simular los pétalos flotando o cualquier objeto flotante
+  const petal = document.createElement('div');
+  petal.classList.add('floating-object');
+  document.body.appendChild(petal);
+
+  // Simular movimiento de los objetos flotantes (pétalos, etc.)
+  setInterval(() => {
+    petal.style.transform = `translate(${Math.random() * window.innerWidth}px, ${Math.random() * window.innerHeight}px)`;
+  }, 2000);
+}
+
+function showCountdown() {
+  // Función para mostrar la cuenta regresiva
+  let countdown = 10;
+  const countdownElement = document.getElementById('countdown');
+  countdownElement.innerHTML = countdown;
+
+  const countdownInterval = setInterval(() => {
+    countdown--;
+    countdownElement.innerHTML = countdown;
+    if (countdown <= 0) {
+      clearInterval(countdownInterval);
+      countdownElement.innerHTML = '¡Feliz día!';
+    }
+  }, 1000);
+}
+
+// Iniciar la experiencia al hacer clic en la pantalla de inicio
+document.addEventListener('DOMContentLoaded', () => {
+  const startScreen = document.getElementById('start-screen');
+  const mainContent = document.getElementById('main-content');
+
+  function initExperience() {
+    if (startScreen) startScreen.style.display = 'none';
+    if (mainContent) mainContent.style.display = 'block';
+    
+    startMainExperience(); 
+    
+    // Esta llamada asegura que la música intente reproducirse justo después de que se descarte la pantalla de inicio.
+    // playBackgroundMusic tiene su propia bandera 'musicInitialized'.
+    playBackgroundMusic(); 
+  }
+
+  if (startScreen) {
+    startScreen.addEventListener('click', initExperience, { once: true });
+    startScreen.addEventListener('touchstart', initExperience, { once: true, passive: true });
+  } else {
+    // Fallback si no se encuentra start-screen
+    initExperience();
+  }
+});
+
+// Efecto máquina de escribir para el texto de dedicatoria (seguidores)
+function showDedicationText() {
+  const dedicationText = document.getElementById('dedication-text');
+  let text = "¡Gracias por ser parte de esta experiencia!";
+  let i = 0;
+
+  function typeWriter() {
+    if (i < text.length) {
+      dedicationText.innerHTML += text.charAt(i);
+      i++;
+      setTimeout(typeWriter, 100);
+    }
+  }
+
+  typeWriter();
+}
+
+// Funciones adicionales de animación
+function startFloatingObjects() {
+  // Aquí va el código para los objetos flotantes (pueden ser hojas o partículas)
+  console.log("Los objetos están flotando.");
+}
+
+function showCountdown() {
+  // Aquí va el código para mostrar la cuenta regresiva
+  const countdownElement = document.getElementById('countdown');
+  let count = 5;
+  countdownElement.innerHTML = count;
+  
+  const interval = setInterval(() => {
+    count--;
+    countdownElement.innerHTML = count;
+    if (count === 0) {
+      clearInterval(interval);
+      countdownElement.innerHTML = "¡Listo!";
+    }
+  }, 1000);
+}
+
+function playBackgroundMusic() {
+  const audio = new Audio('path_to_your_background_music.mp3');
+  audio.loop = true;
+  audio.play();
+  console.log("La música de fondo está sonando.");
+}
+
+// Función para obtener parámetros de la URL (si los necesitas)
+function getURLParam(name) {
+  const url = new URL(window.location.href);
+  return url.searchParams.get(name);
+}
 
 // Efecto máquina de escribir para el texto de dedicatoria (seguidores)
 function getURLParam(name) {
@@ -73,26 +211,51 @@ function showDedicationText() {
   if (!text) {
     // Ahora agregamos la propiedad data-emoji para crear el duplicado
     text = `<span class="red-text">Para:</span><span class="emoji-border" data-emoji="🩵">🩵</span><span class="emoji-border" data-emoji="😍">😍</span><span class="texto-resaltado"> Mi Amorcito Lindo </span><span class="emoji-border" data-emoji="😘">😘</span><span class="emoji-border" data-emoji="🤍">🤍</span>\n
-    No hay distancia que nos separe, ni reloj que el fin marque,
+    No hay distancia que nos separe, ni reloj que el fin marque;
+
     mi amor por ti sigue intacto, aunque en silencio yo me encuentre aquí.
+    
     Te amo en cada rincón del día, en cada paso, en cada instante,
+    
     aunque tus palabras me eviten, aunque tu mirada se haga distante.
+
+
+    
     Me duele el alma verte distante,
+    
     como si no importara el amor que por ti arde,
+    
     y aunque mis palabras se ahogan en el aire,
+    
     mi corazón no deja de llamarte.
-    No recibir un hola, ni saber de ti,
-    me hace sentir vacío, me duele muy dentro, ¡SÍ AQUÍ!👉🏼💔
-    pero aunque el silencio me consume y la ausencia me reclama,
-    mi amor por ti no decae, este amor nunca se acaba.
+
+
+    
+    No recibir un "hola", ni saber de ti,
+    
+    me hace sentir vacío, me duele muy dentro… ¡SÍ, AQUÍ!👉🏼💔
+    
+    Pero, aunque el silencio me consume y la ausencia me reclama,
+    
+    mi amor por ti no decae; este amor nunca se acaba.
+
     Porque en mi mente sigues presente,
+    
     aunque a veces no lo demuestre,
-    yo te sigo eligiendo, aun en la agodia de cada parpitar,
+    
+    yo te sigo eligiendo, aun en la agonía de cada palpitar,
+    
     pues mi amor no pierde la calma, no deja de luchar.
+
+
+
     Quizá no entiendas lo que me duele,
+    
     quizá no sepas que en mi alma duele el olvido,
+    
     pero en mi corazón sigues siendo mi todo,
-    y mi amor por ti nunca será un olvido.`;
+    
+    y mi amor por ti nunca será un olvido..`;
   } else {
     text = decodeURIComponent(text).replace(/\\n/g, '\n');
   }
@@ -145,7 +308,7 @@ function showSignature() {
     dedication.appendChild(signature);
   }
   let firma = getURLParam('firma');
-  signature.textContent = firma ? decodeURIComponent(firma) : "Con mucho amor y esfuerzo: Tu Ángel";
+  signature.textContent = firma ? decodeURIComponent(firma) : "Con muchisimo codigo y amor, DE: Tu Ángel";
   signature.classList.add('visible');
 }
 
@@ -185,93 +348,6 @@ function startFloatingObjects() {
   spawn();
 }
 
-// // Cuenta regresiva o fecha especial
-// function showCountdown() {
-//   const container = document.getElementById('countdown');
-  
-//   // Obtiene los parámetros start y event de la URL (si los hay)
-//   let startParam = getURLParam('start');
-//   let eventParam = getURLParam('event');
-  
-//   // Si no hay parámetro 'start', por defecto es el 23 de febrero de 2025 a las 3 PM
-//   let startDate = startParam ? new Date(startParam + 'T00:00:00') : new Date('2025-02-23T15:00:00');
-  
-//   // Si no hay parámetro 'event', por defecto es el 3 de agosto de 2025
-//   let eventDate = eventParam ? new Date(eventParam + 'T00:00:00') : new Date('2025-08-03T00:00:00');
-
-//   function update() {
-//     const now = new Date();  // Hora actual
-
-//     // Calcula la diferencia de tiempo entre la fecha actual y la fecha de inicio
-//     let diff = now - startDate;
-    
-//     // Si la fecha de inicio es en el futuro, mostramos el tiempo restante
-//     if (diff < 0) {
-//       let eventDiff = startDate - now;
-//       let eventDays = Math.max(0, Math.floor(eventDiff / (1000 * 60 * 60 * 24)));  // Días hasta la fecha de inicio
-//       let eventHours = Math.max(0, Math.floor((eventDiff / (1000 * 60 * 60)) % 24));  // Horas hasta la fecha de inicio
-//       let eventMinutes = Math.max(0, Math.floor((eventDiff / (1000 * 60)) % 60));  // Minutos hasta la fecha de inicio
-//       let eventSeconds = Math.max(0, Math.floor((eventDiff / 1000) % 60));  // Segundos hasta la fecha de inicio
-
-//       container.innerHTML =
-//         `Faltan para estar juntos: <b>${eventDays}d ${eventHours}h ${eventMinutes}m ${eventSeconds}s</b><br>` +
-//         `Nuestro aniversario: <b>${eventDays}d ${eventHours}h ${eventMinutes}m ${eventSeconds}s</b>`;
-//     } 
-//     else {
-//       // Si ya pasó la fecha de inicio, mostramos el tiempo transcurrido
-//       let days = Math.floor(diff / (1000 * 60 * 60 * 24));  // Días transcurridos
-//       let hours = Math.floor((diff / (1000 * 60 * 60)) % 24);  // Horas transcurridas
-//       let minutes = Math.floor((diff / (1000 * 60)) % 60);  // Minutos transcurridos
-//       let seconds = Math.floor((diff / 1000) % 60);  // Segundos transcurridos
-
-//       container.innerHTML =
-//         `Llevamos juntos: <b>${days}d ${hours}h ${minutes}m ${seconds}s</b><br>` +
-//         `Nuestro aniversario: <b>${eventDays}d ${eventHours}h ${eventMinutes}m ${eventSeconds}s</b>`;
-//     }
-
-//     // Hace visible el contenedor (en caso de que tuviera alguna animación o estilo)
-//     container.classList.add('visible');
-//   }
-
-//   update();  // Ejecuta inmediatamente al cargar la página
-//   setInterval(update, 1000);  // Actualiza cada segundo
-// }
-//////////////////////////////////////////////////////
-// function showCountdown() {
-//   const container = document.getElementById('countdown');
-  
-//   // Definir la fecha de destino: 30 de junio a las 2 PM
-//   const targetDate = new Date('2025-06-30T14:00:00');  // Fecha y hora destino
-
-//   function update() {
-//     const now = new Date();  // Hora actual
-//     let diff = targetDate - now;  // Diferencia de tiempo entre ahora y el 30 de junio a las 2 PM
-
-//     // Si la fecha ya pasó, mostramos un mensaje (por ejemplo: "El evento ya ocurrió")
-//     if (diff <= 0) {
-//       container.innerHTML = "¡La cuenta regresiva ha terminado!";
-//       container.classList.add('visible');
-//       return;
-//     }
-
-//     // Calcula la diferencia en días, horas, minutos y segundos
-//     let days = Math.floor(diff / (1000 * 60 * 60 * 24));  // Días restantes
-//     let hours = Math.floor((diff / (1000 * 60 * 60)) % 24);  // Horas restantes
-//     let minutes = Math.floor((diff / (1000 * 60)) % 60);  // Minutos restantes
-//     let seconds = Math.floor((diff / 1000) % 60);  // Segundos restantes
-
-//     // Actualiza el contenido del contenedor con el tiempo restante
-//     container.innerHTML =
-//       `Faltan: <b>${days}d ${hours}h ${minutes}m ${seconds}s</b> para el evento.`;
-
-//     // Hace visible el contenedor (en caso de que tuviera alguna animación o estilo)
-//     container.classList.add('visible');
-//   }
-
-//   update();  // Ejecuta inmediatamente al cargar la página
-//   setInterval(update, 1000);  // Actualiza cada segundo
-// }
-///////////////////////////////////////////////////////////////////////////////////////////////////
 function showCountdown() {
   const container = document.getElementById('countdown');
   
@@ -300,11 +376,16 @@ function showCountdown() {
   setInterval(update, 1000);  // Actualiza cada segundo
 }
 
+let musicInitialized = false; // Bandera para asegurar que la música se inicializa solo una vez
 
 // --- Música de fondo ---
 function playBackgroundMusic() {
+  if (musicInitialized) return; // Si ya se inicializó, no hacer nada más
+  musicInitialized = true;
+
   const audio = document.getElementById('bg-music');
   if (!audio) return;
+
 
   // --- Opción archivo local por parámetro 'musica' ---
   let musicaParam = getURLParam('musica');
@@ -312,6 +393,7 @@ function playBackgroundMusic() {
     // Decodifica y previene rutas maliciosas
     musicaParam = decodeURIComponent(musicaParam).replace(/[^\w\d .\-]/g, '');
     audio.src = 'Music/' + musicaParam;
+  } else {
   }
 
   // --- Opción YouTube (solo mensaje de ayuda) ---
@@ -341,8 +423,7 @@ function playBackgroundMusic() {
   let btn = document.getElementById('music-btn');
   if (!btn) {
     btn = document.createElement('button');
-    btn.id = 'music-btn';
-    btn.textContent = '🔊 Música';
+    btn.id = 'music-btn'; // El texto se establecerá después del intento de play
     btn.style.position = 'fixed';
     btn.style.bottom = '18px';
     btn.style.right = '18px';
@@ -355,27 +436,137 @@ function playBackgroundMusic() {
     btn.style.cursor = 'pointer';
     document.body.appendChild(btn);
   }
+  // Estado inicial del botón antes de intentar reproducir
+  if (btn && audio.paused) btn.textContent = '▶️ Música';
+
   audio.volume = 0.7;
   audio.loop = true;
-  // Intentar reproducir inmediatamente
-  audio.play().then(() => {
-    btn.textContent = '🔊 Música';
-  }).catch(() => {
-    // Si falla el autoplay, esperar click en el botón
-    btn.textContent = '▶️ Música';
-  });
-  btn.onclick = () => {
+
+  const removeGeneralInteractionListeners = () => {
+    eventListenersConfig.forEach(listener => {
+      listener.target.removeEventListener(listener.type, listener.handler, listener.options || false);
+    });
+    listenersAttached = false;
+  };
+  let listenersAttached = false;
+
+  // Función para intentar reproducir y actualizar el botón
+  const tryPlayAudioAndUpdateButton = () => {
     if (audio.paused) {
-      audio.play();
-      btn.textContent = '🔊 Música';
+      audio.play().then(() => {
+        if (btn) btn.textContent = '🔊 Música';
+        removeGeneralEventListeners(); // Usar el nombre correcto de la función
+      }).catch(() => {
+        if (btn) btn.textContent = '▶️ Música';
+      });
     } else {
-      audio.pause();
-      btn.textContent = '🔈 Música';
+      // Si ya está sonando, asegurarse de que los listeners se hayan ido.
+      if (btn) btn.textContent = '🔊 Música'; // Asegurar que el botón refleje el estado
+      removeGeneralEventListeners(); // Usar el nombre correcto de la función
     }
   };
-}
 
-// Intentar reproducir la música lo antes posible (al cargar la página)
-window.addEventListener('DOMContentLoaded', () => {
-  playBackgroundMusic();
-});
+  // Manejador para la primera interacción general del usuario (click, touch, scroll)
+  const handleGeneralInteraction = (event) => {
+    const target = event.target;
+    const treeContainer = document.getElementById('tree-container'); // El div que contiene el SVG
+    const dedicationTextEl = document.getElementById('dedication-text');
+
+    // 1. Ignorar si el evento es en el botón de música
+    if (event && btn && (event.target === btn || btn.contains(event.target))) {
+      return;
+    }
+
+    // 2. Condición para touchmove (ignorar si es un solo dedo deslizando sin ser scroll)
+    if (event.type === 'touchmove' && (!event.touches || event.touches.length < 2)) {
+        return;
+    }
+
+    // 3. Determinar si la interacción es válida para iniciar música
+    let interactionShouldAttemptPlay = false;
+    if (event.type === 'scroll') { // Scroll en la ventana
+        interactionShouldAttemptPlay = true;
+    } else if (event.type === 'click' || event.type === 'touchstart' || (event.type === 'touchmove' && event.touches && event.touches.length >=2) ) {
+        // Para click, touchstart, o zoom (touchmove con >=2 dedos)
+        if ((treeContainer && treeContainer.contains(target)) || // Dentro del SVG/su contenedor
+            (dedicationTextEl && dedicationTextEl.contains(target)) || // Dentro de la dedicatoria
+            target === document.body || target === document.documentElement) { // Clic/toque directo en body/html (fondo)
+            interactionShouldAttemptPlay = true;
+        }
+    }
+    
+    if (!interactionShouldAttemptPlay) {
+        return;
+    }
+
+    // Si es una interacción válida:
+    if (audio.paused) {
+      audio.play().then(() => {
+        if (btn) btn.textContent = '🔊 Música';
+        removeGeneralEventListeners(); 
+      }).catch(() => {
+        if (btn) btn.textContent = '▶️ Música';
+        removeGeneralEventListeners(); // Quitar listeners incluso si este intento falla, para que solo el botón quede.
+      });
+    } else {
+      removeGeneralEventListeners();
+    }
+  };
+
+  const eventListenersConfig = [
+    { target: document, type: 'click', handler: handleGeneralInteraction },
+    { target: document, type: 'touchstart', handler: handleGeneralInteraction, options: { passive: true } },
+    { target: window, type: 'scroll', handler: handleGeneralInteraction, options: { passive: true } },
+    { target: document, type: 'touchmove', handler: handleGeneralInteraction, options: { passive: true } },
+  ];
+
+  const addGeneralEventListeners = () => {
+    if (listenersAttached) return;
+    eventListenersConfig.forEach(listener => {
+      listener.target.addEventListener(listener.type, listener.handler, listener.options || false);
+    });
+    listenersAttached = true;
+  };
+
+  // Renombrar para claridad, ya que se usa arriba.
+  const removeGeneralEventListeners = removeGeneralInteractionListeners;
+
+  // Intentar reproducir inmediatamente (autoplay)
+  audio.play().then(() => {
+    // Autoplay fue "exitoso" según el navegador (la promesa se resolvió)
+    if (btn) btn.textContent = '🔊 Música';
+
+
+    setTimeout(() => {
+      if (audio.paused) {
+        // Autoplay falló silenciosamente o el navegador lo pausó.
+        if (btn) btn.textContent = '▶️ Música'; // Corregir el estado del botón
+        addGeneralEventListeners();
+      } else {
+      }
+    }, 100); // Pequeño delay para verificar el estado real
+
+  }).catch(() => {
+    // Autoplay falló.
+    if (btn) btn.textContent = '▶️ Música';
+    // Adjuntar listeners para la primera interacción del usuario si el autoplay falla.
+    addGeneralEventListeners();
+  });
+
+  // Lógica del botón de música
+  if (btn) {
+    btn.onclick = () => {
+      if (audio.paused) {
+        audio.play().then(() => { // El botón también usa la misma lógica de reproducción y limpieza
+          if (btn) btn.textContent = '🔊 Música';
+          removeGeneralEventListeners();
+        }).catch(() => {
+          if (btn) btn.textContent = '▶️ Música';
+        });
+      } else {
+        audio.pause();
+        btn.textContent = '🔈 Música';
+      }
+    };
+  }
+}

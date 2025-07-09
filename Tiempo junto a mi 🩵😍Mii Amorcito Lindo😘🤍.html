@@ -66,6 +66,118 @@
     background: #fcfcfc;
 }
 
+/*© Zero - Código libre no comercial*/
+
+body {
+  font-size: 16px;
+}
+
+.tree-container {
+  width: 92vw !important;
+  height: 62vw !important;
+  max-width: 98vw;
+  max-height: 80vw;
+  min-width: 180px;
+  min-height: 180px;
+  position: absolute;
+  top: 48%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+}
+
+.tree-container svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.tree-container svg.move-and-scale {
+  transition: transform 1.2s cubic-bezier(.77,0,.18,1);
+  /* Mueve hacia abajo en caso de los celualares */
+  transform: translateY(60px) scale(1.18);
+}
+
+.dedication-text {
+  position: absolute;
+  top: 7vw;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 92vw;
+  font-size: 1.05rem;
+  text-align: center;
+  color: #000000;
+  font-family: 'Courier New', Courier, monospace;
+  white-space: pre-line;
+  z-index: 3;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.signature {
+  position: static;
+  display: block;
+  margin: 2.2em auto 0 auto;
+  left: auto;
+  bottom: auto;
+  transform: none;
+  font-size: 1.25rem;
+  color: #e60026;
+  opacity: 0;
+  z-index: 5;
+  white-space: pre;
+  pointer-events: none;
+  transition: opacity 0.7s;
+  text-align: center;
+}
+
+@media (max-width: 700px) {
+  .signature {
+    position: static;
+    display: block;
+    margin: 2.2em auto 0 auto;
+    left: auto;
+    bottom: auto;
+    transform: none;
+    font-size: 1.25rem;
+    text-align: center;
+  }
+}
+
+.countdown {
+  position: fixed;
+  left: 50%;
+  bottom: 10vw;
+  transform: translateX(-50%);
+  font-size: 0.98rem;
+  min-width: 60vw;
+  max-width: 92vw;
+  text-align: center;
+  padding: 0.5em 0.7em;
+  border-radius: 1em;
+  background: #fff8;
+  box-shadow: 0 2px 8px #e6002611;
+  z-index: 6;
+  pointer-events: none;
+  letter-spacing: 0.05em;
+  transition: opacity 0.8s cubic-bezier(.77,0,.18,1), transform 0.8s cubic-bezier(.77,0,.18,1);
+  opacity: 0;
+  transform: translateX(-50%) translateY(30px);
+}
+
+.countdown.visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Ajusta los pétalos flotantes */
+.floating-petal {
+  width: 13px;
+  height: 18px;
+}
+
+
+
 .red-text {
   color: red;
   position: relative;
@@ -714,93 +826,6 @@ function startFloatingObjects() {
   spawn();
 }
 
-// // Cuenta regresiva o fecha especial
-// function showCountdown() {
-//   const container = document.getElementById('countdown');
-  
-//   // Obtiene los parámetros start y event de la URL (si los hay)
-//   let startParam = getURLParam('start');
-//   let eventParam = getURLParam('event');
-  
-//   // Si no hay parámetro 'start', por defecto es el 23 de febrero de 2025 a las 3 PM
-//   let startDate = startParam ? new Date(startParam + 'T00:00:00') : new Date('2025-02-23T15:00:00');
-  
-//   // Si no hay parámetro 'event', por defecto es el 3 de agosto de 2025
-//   let eventDate = eventParam ? new Date(eventParam + 'T00:00:00') : new Date('2025-08-03T00:00:00');
-
-//   function update() {
-//     const now = new Date();  // Hora actual
-
-//     // Calcula la diferencia de tiempo entre la fecha actual y la fecha de inicio
-//     let diff = now - startDate;
-    
-//     // Si la fecha de inicio es en el futuro, mostramos el tiempo restante
-//     if (diff < 0) {
-//       let eventDiff = startDate - now;
-//       let eventDays = Math.max(0, Math.floor(eventDiff / (1000 * 60 * 60 * 24)));  // Días hasta la fecha de inicio
-//       let eventHours = Math.max(0, Math.floor((eventDiff / (1000 * 60 * 60)) % 24));  // Horas hasta la fecha de inicio
-//       let eventMinutes = Math.max(0, Math.floor((eventDiff / (1000 * 60)) % 60));  // Minutos hasta la fecha de inicio
-//       let eventSeconds = Math.max(0, Math.floor((eventDiff / 1000) % 60));  // Segundos hasta la fecha de inicio
-
-//       container.innerHTML =
-//         `Faltan para estar juntos: <b>${eventDays}d ${eventHours}h ${eventMinutes}m ${eventSeconds}s</b><br>` +
-//         `Nuestro aniversario: <b>${eventDays}d ${eventHours}h ${eventMinutes}m ${eventSeconds}s</b>`;
-//     } 
-//     else {
-//       // Si ya pasó la fecha de inicio, mostramos el tiempo transcurrido
-//       let days = Math.floor(diff / (1000 * 60 * 60 * 24));  // Días transcurridos
-//       let hours = Math.floor((diff / (1000 * 60 * 60)) % 24);  // Horas transcurridas
-//       let minutes = Math.floor((diff / (1000 * 60)) % 60);  // Minutos transcurridos
-//       let seconds = Math.floor((diff / 1000) % 60);  // Segundos transcurridos
-
-//       container.innerHTML =
-//         `Llevamos juntos: <b>${days}d ${hours}h ${minutes}m ${seconds}s</b><br>` +
-//         `Nuestro aniversario: <b>${eventDays}d ${eventHours}h ${eventMinutes}m ${eventSeconds}s</b>`;
-//     }
-
-//     // Hace visible el contenedor (en caso de que tuviera alguna animación o estilo)
-//     container.classList.add('visible');
-//   }
-
-//   update();  // Ejecuta inmediatamente al cargar la página
-//   setInterval(update, 1000);  // Actualiza cada segundo
-// }
-//////////////////////////////////////////////////////
-// function showCountdown() {
-//   const container = document.getElementById('countdown');
-  
-//   // Definir la fecha de destino: 30 de junio a las 2 PM
-//   const targetDate = new Date('2025-06-30T14:00:00');  // Fecha y hora destino
-
-//   function update() {
-//     const now = new Date();  // Hora actual
-//     let diff = targetDate - now;  // Diferencia de tiempo entre ahora y el 30 de junio a las 2 PM
-
-//     // Si la fecha ya pasó, mostramos un mensaje (por ejemplo: "El evento ya ocurrió")
-//     if (diff <= 0) {
-//       container.innerHTML = "¡La cuenta regresiva ha terminado!";
-//       container.classList.add('visible');
-//       return;
-//     }
-
-//     // Calcula la diferencia en días, horas, minutos y segundos
-//     let days = Math.floor(diff / (1000 * 60 * 60 * 24));  // Días restantes
-//     let hours = Math.floor((diff / (1000 * 60 * 60)) % 24);  // Horas restantes
-//     let minutes = Math.floor((diff / (1000 * 60)) % 60);  // Minutos restantes
-//     let seconds = Math.floor((diff / 1000) % 60);  // Segundos restantes
-
-//     // Actualiza el contenido del contenedor con el tiempo restante
-//     container.innerHTML =
-//       `Faltan: <b>${days}d ${hours}h ${minutes}m ${seconds}s</b> para el evento.`;
-
-//     // Hace visible el contenedor (en caso de que tuviera alguna animación o estilo)
-//     container.classList.add('visible');
-//   }
-
-//   update();  // Ejecuta inmediatamente al cargar la página
-//   setInterval(update, 1000);  // Actualiza cada segundo
-// }
-///////////////////////////////////////////////////////////////////////////////////////////////////
 function showCountdown() {
   const container = document.getElementById('countdown');
   
@@ -847,10 +872,6 @@ function playBackgroundMusic() {
     musicaParam = decodeURIComponent(musicaParam).replace(/[^\w\d .\-]/g, '');
     audio.src = 'Music/' + musicaParam;
   } else {
-    // Si no hay parámetro 'musica' y el <source> usa un enlace directo (como Dropbox con dl=1),
-    // el navegador debería usarlo. Si fuera un archivo local y no hay parámetro,
-    // podrías establecer un audio.src = 'Music/default.mp3'; aquí.
-    // Para tu caso con Dropbox, el <source> es suficiente.
   }
 
   // --- Opción YouTube (solo mensaje de ayuda) ---
@@ -915,8 +936,6 @@ function playBackgroundMusic() {
         removeGeneralEventListeners(); // Usar el nombre correcto de la función
       }).catch(() => {
         if (btn) btn.textContent = '▶️ Música';
-        // Si falla incluso después de una interacción, los listeners generales ya se habrán ido.
-        // El usuario deberá usar el botón explícitamente.
       });
     } else {
       // Si ya está sonando, asegurarse de que los listeners se hayan ido.
@@ -968,8 +987,6 @@ function playBackgroundMusic() {
         removeGeneralEventListeners(); // Quitar listeners incluso si este intento falla, para que solo el botón quede.
       });
     } else {
-      // Si la música ya está sonando y la interacción no es el botón,
-      // no la pausamos, pero sí removemos los listeners generales.
       removeGeneralEventListeners();
     }
   };
@@ -997,17 +1014,13 @@ function playBackgroundMusic() {
     // Autoplay fue "exitoso" según el navegador (la promesa se resolvió)
     if (btn) btn.textContent = '🔊 Música';
 
-    // Comprobar si el audio realmente está sonando o si fue un "fallo silencioso"
-    // Damos un pequeño margen para que el estado de 'paused' se actualice si el navegador lo bloquea.
+
     setTimeout(() => {
       if (audio.paused) {
         // Autoplay falló silenciosamente o el navegador lo pausó.
         if (btn) btn.textContent = '▶️ Música'; // Corregir el estado del botón
         addGeneralEventListeners();
       } else {
-        // Autoplay realmente exitoso, los listeners generales no son necesarios
-        // y no se habrán añadido desde el .catch.
-        // La función handleFirstGeneralInteraction (si se llamara) se encargaría de removerlos.
       }
     }, 100); // Pequeño delay para verificar el estado real
 
@@ -1035,8 +1048,6 @@ function playBackgroundMusic() {
     };
   }
 }
-
-// Intentar reproducir la música lo antes posible (al cargar la página)
     </script>
 </body>
 </html>
