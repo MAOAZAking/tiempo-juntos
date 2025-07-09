@@ -9,7 +9,7 @@ function startMainExperience() {
 
   // Cargar el SVG desde la carpeta externa "Img/treelove-new"
     // Cargar el SVG desde la carpeta externa "Img/treelove-new"
-fetch('/Img/treelove-new.svg')
+fetch('Img/treelove-new.svg')
   .then(response => response.text()) // Convertir la respuesta en texto (el contenido del SVG)
   .then(svgText => {
     console.log(svgText); // Verifica si el SVG se está cargando correctamente
