@@ -168,36 +168,45 @@ body {
 }
 
 /* Para los emojis */
-.emoji-border {
-  position: relative;
-  font-size: 20px; /* Tamaño del emoji */
-  color: red; /* Color original del emoji */
-  display: inline-block;
-  z-index: 1;
-}
-
-.emoji-border::before {
-  content: attr(data-emoji); /* Usamos el mismo emoji que en el contenido original */
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 1; /* Coloca el contorno detrás del emoji */
-  font-size: 20px; /* Mantiene el tamaño del emoji igual al original */
-  color: black; /* El duplicado será negro */
-  transform: scale(1); /* Hacemos el duplicado un poco más grande para que se vea como un borde */
-}
 svg {
     width: 100px;
     height: 100px;
 }
-.emoji {
-    font-size: 20px;
+/* Para forzar a usar la fuente de emojis de Google */
+.emoji,
+.emoji-border,
+.emoji-container {
+    font-family: 'Noto Color Emoji', 'Segoe UI Emoji', 'Apple Color Emoji', 'Android Emoji', sans-serif;
 }
+
+/* Tu estilo existente para los emojis */
+.emoji {
+    font-size: 20px; /* Tamaño del emoji */
+}
+
+.emoji-border {
+    font-size: 20px; /* Tamaño del emoji */
+    color: transparent; /* Hacemos el emoji transparente para poner el borde */
+    text-shadow: 0 0 5px black, 0 0 10px black, 0 0 15px black; /* Sombra que simula el borde */
+}
+
+.emoji-border::before {
+    content: attr(data-emoji); /* Usamos el mismo emoji que en el contenido original */
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1; /* Coloca el contorno detrás del emoji */
+    font-size: 20px; /* Mantiene el tamaño del emoji igual al original */
+    color: black; /* El duplicado será negro */
+    transform: scale(1); /* Hacemos el duplicado un poco más grande para que se vea como un borde */
+}
+
 .emoji-container {
     display: inline-block;
     margin: 10px;
     position: relative;
 }
+
 .emoji-container svg {
     position: absolute;
     top: 0;
@@ -205,11 +214,7 @@ svg {
     transform: scale(1.3);
     z-index: -1;
 }
-.emoji-border {
-    font-size: 20px; /* tamaño del emoji */
-    color: transparent; /* Hacemos el emoji transparente para poner el borde */
-    text-shadow: 0 0 5px black, 0 0 10px black, 0 0 15px black; /* Sombra que simula el borde */
-}
+
 
 
 #fireworks-canvas {
