@@ -30,16 +30,6 @@
     background: #fcfcfc;
 }
 
-.red-text {
-  color: red;
-  position: relative;
-  font-weight: bold;
-  display: inline-block;
-  font-size: 25px; /* Tamaño del texto "Para:" */
-}
-
-/*© Zero - Código libre no comercial*/
-
 body {
   font-size: 16px;
 }
@@ -148,73 +138,176 @@ body {
   height: 18px;
 }
 
-
-
-.red-text::before {
-  content: "Para:"; /* El mismo texto que el de .red-text */
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: -1;  /* Coloca el contorno detrás del texto original */
-  color: black;  /* El borde será negro */
-  font-weight: bold; /* Asegura que el borde se vea con el mismo grosor */
-  font-size: 25px; /* Mantiene el tamaño del texto duplicado igual al original */
-  -webkit-text-stroke: 3px black;  /* Añade un borde negro alrededor del texto duplicado */
-}
-
-.texto-resaltado{
-  font-weight: bold;
-  font-size: 20px;
-}
-
-/* Para los emojis */
 svg {
     width: 100px;
     height: 100px;
 }
-/* Para forzar a usar la fuente de emojis de Google */
+/* Estilo para el texto "Para:" */
+.red-text {
+  color: #ff0000; /* Color del texto */
+  font-weight: bold;
+  vertical-align: middle; /* Alinea el emoji con el texto */
+  font-size: 1.9rem; /* Tamaño ajustado para el texto "Para:" */
+  position: relative;
+  display: inline-block;
+  padding: 0 0.3em; /* Ajuste de espacio alrededor */
+  background: none; /* Elimina cualquier fondo detrás del texto */
+}
+
+.red-text {
+  color: red;
+  position: relative;
+  font-weight: bold;
+  display: inline-block;
+  font-size: 1.9rem; /* Tamaño del texto "Para:" */
+}
+
+.red-text::before {
+  content: 'Para:'; /* El mismo texto que el de .red-text */
+  position: absolute;
+  top: 0px; /* Ajusta la posición vertical del texto "Para:" */
+  left: 9.5px;
+  vertical-align: middle; /* Alinea el emoji con el texto */
+  z-index: -1;  /* Coloca el contorno detrás del texto original */
+  color: black;  /* El borde será negro */
+  font-weight: bold; /* Asegura que el borde se vea con el mismo grosor */
+  font-size: 1.9rem; /* Mantiene el tamaño del texto duplicado igual al original */
+  -webkit-text-stroke: 3px black;  /* Añade un borde negro alrededor del texto duplicado */
+}
+
+.texto-resaltado {
+  font-weight: bold;
+  font-size: 1.9rem;
+  /*padding: 0 0.1em; /* Espacio a la izquierda y derecha */
+  display: inline-block;
+  vertical-align: middle; /* Alinea el emoji con el texto */
+  /*margin: 0 0.1m; /* También puedes usar margen si prefieres que el espacio sea más grande */
+}
+
+/* Estilos para los emojis */
 .emoji,
-.emoji-border,
-.emoji-container {
-    font-family: 'Noto Color Emoji', 'Segoe UI Emoji', 'Apple Color Emoji', 'Android Emoji', sans-serif;
-}
-
-/* Tu estilo existente para los emojis */
-.emoji {
-    font-size: 20px; /* Tamaño del emoji */
-}
-
 .emoji-border {
-    font-size: 20px; /* Tamaño del emoji */
-    color: transparent; /* Hacemos el emoji transparente para poner el borde */
-    text-shadow: 0 0 5px black, 0 0 10px black, 0 0 15px black; /* Sombra que simula el borde */
+  font-family: 'Noto Color Emoji', 'Segoe UI Emoji', 'Apple Color Emoji', 'Android Emoji', sans-serif;
+  font-size: 1.5rem; /* Tamaño ajustado del emoji */
+  vertical-align: middle; /* Alinea el emoji con el texto */
+  display: inline-block;
+  line-height: 1;
+  line-height: 1; /* Evita que el emoji se desplace respecto a la línea de texto */
 }
 
-.emoji-border::before {
-    content: attr(data-emoji); /* Usamos el mismo emoji que en el contenido original */
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 1; /* Coloca el contorno detrás del emoji */
-    font-size: 20px; /* Mantiene el tamaño del emoji igual al original */
-    color: black; /* El duplicado será negro */
-    transform: scale(1); /* Hacemos el duplicado un poco más grande para que se vea como un borde */
+/* Estilo para el borde de los emojis */
+.emoji-border {
+  font-size: 1.5rem; /* Tamaño de los emojis con borde (ajustado) */
+  color: inherit; /* Asegura que el emoji no sea transparente */
+  text-shadow: 
+    0 0 6px black,  /* Sombra más fina */
+    0 0 9px black,  /* Sombra más fina */
+    0 0 12px black;  /* Sombra más fina */
+  padding: 0.07em; /* Espaciado reducido alrededor del emoji para que el borde no sea tan grande */
+  vertical-align: middle; /* Alinea el emoji con el texto */
+  line-height: 1;
+  display: inline-block; /* Asegura que no se desborde */
 }
 
+/* Contenedor de los emojis */
 .emoji-container {
-    display: inline-block;
-    margin: 10px;
-    position: relative;
+  display: inline-block;
+  margin: 0 0.3em; /* Espacio más pequeño entre los emojis */
+  position: relative;
+  line-height: 1;
+  vertical-align: middle;  /* Alinea el emoji con el texto */
 }
 
+/* Ajuste para los contenedores de los emojis (si usas SVG) */
 .emoji-container svg {
-    position: absolute;
-    top: 0;
-    left: 0;
-    transform: scale(1.3);
-    z-index: -1;
+  width: 1em;  /* Controlamos el tamaño para que no se desborde */
+  height: 1em; /* Aseguramos que el SVG no se haga más grande que el texto */
+  vertical-align: middle;  /* Alinea el emoji con el texto */
+  z-index: -1;
+  line-height: 1;
 }
 
+/* Nueva clase para el texto "De:" */
+.red-text-de {
+  color: red; /* Color del texto */
+  font-weight: bold;
+  font-size: 3rem; /* Tamaño ajustado para el texto */
+  position: relative;
+  display: inline-block;
+  padding: 0 0.3em; /* Ajuste de espacio alrededor */
+  background: none; /* Elimina cualquier fondo detrás del texto */
+}
+
+/* Añadir el borde y estilo de "De:" de manera similar a "Para:" */
+.red-text-de::before {
+  content: 'De:'; /* El mismo texto que el de .red-text */
+  position: absolute;
+  top: 0px; /* Ajusta la posición vertical del texto "De:" */
+  left: 14px; /* Ajusta la posición horizontal */
+  vertical-align: middle; /* Alinea el texto */
+  z-index: -1; /* Coloca el contorno detrás del texto original */
+  color: black; /* El borde será negro */
+  font-weight: bold; /* Asegura que el borde se vea con el mismo grosor */
+  font-size: 3rem; /* Tamaño del texto duplicado igual al original */
+  -webkit-text-stroke: 6px black; /* Añade un borde negro alrededor del texto duplicado */
+}
+
+/* Nueva clase para el texto "Tu Ángel" o cualquier firma personalizada */
+.signature-name {
+  color: rgb(0, 174, 255); /* Color personalizado para el nombre */
+  font-size: 60px; /* Tamaño de la firma */
+  font-family: 'Italianno', cursive; /* Aplica la fuente Italiana solo a "Tu Ángel" */
+  letter-spacing: 1px;
+  font-weight: 800; /* Ajusta el peso de la fuente si es necesario */
+  text-transform: capitalize; /* Capitaliza la primera letra */
+  display: inline-block;
+  margin-top: 10px; /* Espacio superior para separarlo un poco del texto anterior */
+  position: relative; /* Necesario para aplicar el pseudo-elemento */
+}
+
+/* Añadir el borde a la firma de "Tu Ángel" */
+.signature-name::before {
+  content: 'Tu Ángel'; /* El mismo texto que el de .red-text */
+  position: absolute;
+  top: 0px; /* Ajusta la posición vertical del texto "Tu Ángel" */
+  left: 14px; /* Ajusta la posición horizontal */
+  vertical-align: middle; /* Alinea el texto */
+  z-index: -1; /* Coloca el contorno detrás del texto original */
+  color: black; /* El borde será negro */
+  font-weight: bold; /* Asegura que el borde se vea con el mismo grosor */
+  font-size: 60px; /* Tamaño del texto duplicado igual al original */
+  -webkit-text-stroke: 8px black; /* Añade un borde negro alrededor del texto duplicado */
+  font-family: 'Italianno', cursive; /* Aplica la misma fuente a "Tu Ángel" */
+}
+
+/* Estilo para el texto visible */
+.love-and-code {
+  color: rgb(255, 243, 220); /* Color del texto */
+  font-weight: bold;
+  font-size: 2rem; /* Ajustamos el tamaño del texto */
+  position: relative;
+  display: inline-block;
+  padding: 0 0.3em; /* Ajuste de espacio alrededor */
+  background: none; /* Elimina cualquier fondo detrás del texto */
+  white-space: pre-wrap; /* Permite los saltos de línea en el texto */
+  line-height: 1.5; /* Ajusta el espacio entre las líneas */
+}
+
+/* Añadir el borde negro a "Con muchísimo código y amor" */
+.love-and-code::before {
+  content: 'Con muchísimo código y amor'; /* El mismo texto que el de .love-and-code */
+  position: absolute;
+  top: 0px; /* Ajusta la posición vertical del borde */
+  left: 0px; /* Ajusta la posición horizontal */
+  vertical-align: middle;
+  z-index: -1; /* Coloca el borde detrás del texto original */
+  color: black; /* El borde será negro */
+  font-weight: bold; /* Asegura que el borde se vea con el mismo grosor */
+  font-size: 2rem; /* Tamaño del texto duplicado igual al original */
+  -webkit-text-stroke: 6px black; /* Añade un borde negro alrededor del texto duplicado */
+  white-space: pre-wrap; /* Permite saltos de línea en el pseudoelemento */
+  line-height: 1.5; /* Ajuste de altura de línea para que se distribuya bien */
+}
 
 
 #fireworks-canvas {
@@ -415,12 +508,13 @@ svg {
 }
 
 /* Estilo para el texto rojo vivo */
-.red-text {
+.credencial-de-text {
   color: #e60026; /* Rojo vivo */
   font-size: 1.2rem; /* Ajusta el tamaño si es necesario */
 }
 
 /* Estilo para la cursiva */
 .italic-text {
+  
   font-style: italic;
 }

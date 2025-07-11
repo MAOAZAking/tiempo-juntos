@@ -210,7 +210,7 @@ function showDedicationText() {
   
   if (!text) {
     // Ahora agregamos la propiedad data-emoji para crear el duplicado
-    text = `<span class="red-text">Para:</span><span class="emoji-border" data-emoji="🩵">🩵</span><span class="emoji-border" data-emoji="😍">😍</span><span class="texto-resaltado"> Mi Amorcito Lindo </span><span class="emoji-border" data-emoji="😘">😘</span><span class="emoji-border" data-emoji="🤍">🤍</span>\n
+    text = `<span class="red-text">Para:</span><span class="emoji-border" data-emoji="🩵">🩵</span><span class="emoji-border" data-emoji="😍">😍</span><span class="texto-resaltado">Mi Amorcito Lindo</span><span class="emoji-border" data-emoji="😘">😘</span><span class="emoji-border" data-emoji="🤍">🤍</span>\n
     No hay distancia que nos separe, ni reloj que el fin marque;
 
     mi amor por ti sigue intacto, aunque en silencio yo me encuentre aquí.
@@ -297,6 +297,7 @@ function showDedicationText() {
 }
 
 // Firma manuscrita animada
+// Firma manuscrita animada
 function showSignature() {
   // Cambia para buscar la firma dentro del contenedor de dedicatoria
   const dedication = document.getElementById('dedication-text');
@@ -309,8 +310,8 @@ function showSignature() {
   }
 
   let firma = getURLParam('firma');
-  const defaultText = "Con muchísimo código y amor";
-  const defaultSignature = "DE: Tu Ángel";
+  const defaultText = "Con muchísimo\ncódigo y amor"; // Cambié esto a añadir un salto de línea
+  const defaultSignature = "De: Tu Ángel"; // Cambié esto a "De: Tu Ángel" como ejemplo
 
   // Crea los elementos que se mostrarán en la firma
   const fullSignature = firma ? decodeURIComponent(firma) : `${defaultText}\n${defaultSignature}`;
@@ -321,24 +322,34 @@ function showSignature() {
   // Limpiar el contenido anterior
   signature.innerHTML = '';
 
-  // Crear el primer span para el texto en azul
-  const textPart = document.createElement('span');
-  textPart.textContent = parts[0]; // El texto de "Con muchísimo código y amor"
-  textPart.classList.add('blue-text'); // Añadir clase para estilo azul rey
+  // Crear el primer span para el texto de "Con muchísimo" y "código y amor"
+  const loveAndCodePart = document.createElement('span');
+  loveAndCodePart.innerHTML = parts[0] + '<br>' + parts[1]; // Añadir salto de línea entre "Con muchísimo" y "código y amor"
+  loveAndCodePart.classList.add('love-and-code'); // Añadir la clase para estilos personalizados
 
-  // Crear el segundo span para la firma en rojo
-  const signaturePart = document.createElement('span');
-  signaturePart.textContent = parts[1]; // El texto "DE: Tu Ángel"
-  signaturePart.classList.add('red-text', 'italic-text'); // Añadir clases para rojo y cursiva
+  // Crear el segundo span para el texto "De:" (usando la clase .red-text-de)
+  const dePart = document.createElement('span');
+  dePart.textContent = parts[2].split(":")[0] + ":"; // El texto "De:"
+  dePart.classList.add('red-text-de'); // Usamos la clase 'red-text-de'
+
+  // Crear el tercer span para el nombre "Tu Ángel" (usando la clase .signature-name)
+  const namePart = document.createElement('span');
+  namePart.textContent = parts[2].split(":")[1]; // El nombre de la firma "Tu Ángel"
+  namePart.classList.add('signature-name'); // Usamos la clase 'signature-name'
 
   // Añadir los spans a la firma
-  signature.appendChild(textPart);
+  signature.appendChild(loveAndCodePart); // Añadir el texto "Con muchísimo código y amor" con salto de línea
   signature.appendChild(document.createElement('br')); // Salto de línea
-  signature.appendChild(signaturePart);
+  signature.appendChild(dePart); // Añadir "De:"
+  signature.appendChild(namePart); // Añadir el nombre "Tu Ángel"
 
   // Añadir la clase visible
   signature.classList.add('visible');
+
+  // Espacio de 100px debajo de la firma (agregado por JS)
+  signature.style.marginBottom = "160px";
 }
+
 
 
 
