@@ -307,8 +307,36 @@ function showSignature() {
     signature.className = 'signature';
     dedication.appendChild(signature);
   }
+
   let firma = getURLParam('firma');
-  signature.textContent = firma ? decodeURIComponent(firma) : "Con muchisimo codigo y amor, DE: Tu Ángel";
+  const defaultText = "Con muchísimo código y amor";
+  const defaultSignature = "DE: Tu Ángel";
+
+  // Crea los elementos que se mostrarán en la firma
+  const fullSignature = firma ? decodeURIComponent(firma) : `${defaultText}\n${defaultSignature}`;
+
+  // Dividir el texto en dos partes: el mensaje de amor y la firma
+  const parts = fullSignature.split("\n");
+
+  // Limpiar el contenido anterior
+  signature.innerHTML = '';
+
+  // Crear el primer span para el texto en azul
+  const textPart = document.createElement('span');
+  textPart.textContent = parts[0]; // El texto de "Con muchísimo código y amor"
+  textPart.classList.add('blue-text'); // Añadir clase para estilo azul rey
+
+  // Crear el segundo span para la firma en rojo
+  const signaturePart = document.createElement('span');
+  signaturePart.textContent = parts[1]; // El texto "DE: Tu Ángel"
+  signaturePart.classList.add('red-text', 'italic-text'); // Añadir clases para rojo y cursiva
+
+  // Añadir los spans a la firma
+  signature.appendChild(textPart);
+  signature.appendChild(document.createElement('br')); // Salto de línea
+  signature.appendChild(signaturePart);
+
+  // Añadir la clase visible
   signature.classList.add('visible');
 }
 
