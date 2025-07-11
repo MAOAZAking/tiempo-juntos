@@ -405,3 +405,22 @@ svg {
     font-size: 1.3rem;
   }
 }
+
+
+/****************************Aqui la firma modificada********************************************+*/
+/* Estilo para el texto azul rey */
+.blue-text {
+  color: royalblue; /* Azul rey */
+  font-size: 1.2rem; /* Ajusta el tamaño si es necesario */
+}
+
+/* Estilo para el texto rojo vivo */
+.red-text {
+  color: #e60026; /* Rojo vivo */
+  font-size: 1.2rem; /* Ajusta el tamaño si es necesario */
+}
+
+/* Estilo para la cursiva */
+.italic-text {
+  font-style: italic;
+}
