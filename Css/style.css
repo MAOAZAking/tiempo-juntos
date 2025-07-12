@@ -19,9 +19,12 @@
     overflow: auto; /* Para permitir el scroll dentro de este contenedor */
 }
 
-      #main-content {
-        display: none; /* Oculto inicialmente */
-      }
+#main-content {
+    display: block; /* Si es necesario para que se vea */
+    overflow-y: auto; /* Permite desplazamiento dentro de este contenedor */
+    max-height: 90vh; /* Controla la altura máxima del contenido */
+}
+
 
 body {
     margin: 0;
