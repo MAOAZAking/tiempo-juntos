@@ -25,10 +25,16 @@ body {
     margin: 0;
     padding: 0;
     width: 100vw;
-    height: 100%;
+    height: auto;  /* No fijes la altura en 100vh */
+    min-height: 100%;  /* Asegúrate de que el contenido se ajuste en altura */
     background: #fcfcfc;
     overflow-x: auto; /* Evita que se desplace horizontalmente */
-    overflow-y: auto; /* Permite el desplazamiento vertical */
+    overflow-y: scroll; /* Permite el desplazamiento vertical */
+}
+
+html, body {
+  overflow-x: auto;  /* Permitir el desplazamiento horizontal */
+  overflow-y: scroll; /* Asegurar que el desplazamiento vertical esté habilitado */
 }
 
 body {
