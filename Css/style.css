@@ -62,19 +62,23 @@ body {
 }
 
 .dedication-text {
-  position: absolute;
-  top: 7vw;
-  left: 50%;
-  transform: translateX(-50%);
-  max-width: 92vw;
-  font-size: 1.05rem;
-  text-align: center;
-  color: #000000;
-  font-family: 'Courier New', Courier, monospace;
-  white-space: pre-line;
-  z-index: 3;
-  opacity: 0;
-  pointer-events: none;
+    position: absolute;
+    top: 7vw;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 92vw;
+    font-size: 1.05rem;
+    text-align: center;
+    color: #000000;
+    font-family: 'Courier New', Courier, monospace;
+    white-space: pre-line;
+    z-index: 3;
+    opacity: 0;
+    pointer-events: auto; /* Permite la interacción con el contenido */
+    max-height: 80vh; /* Limita la altura para que el contenido sea desplazable */
+    overflow: auto; /* Permite el desplazamiento tanto horizontal como vertical */
+    padding: 1rem; /* Añade algo de espacio interior */
+    box-sizing: border-box; /* Asegura que el padding no afecte el tamaño */
 }
 
 .signature {
@@ -94,6 +98,24 @@ body {
   text-align: center;
 }
 
+/* @media (max-width: 700px) {
+    body {
+        overflow: auto; /* Permite desplazamiento en ambas direcciones */
+    /*}
+
+    .dedication-text {
+        position: absolute;
+        top: 10vh; /* Espacio superior para evitar que el texto se pegue al borde */
+        /*left: 50%;
+        transform: translateX(-50%);
+        max-width: 95vw; /* Ajusta el ancho en pantallas más pequeñas */
+        /*font-size: 1.1rem;
+        max-height: 80vh; /* Ajusta la altura */
+        /*overflow: auto; /* Permite desplazamiento tanto vertical como horizontal */
+        /*padding: 1em;
+        box-sizing: border-box;
+    }
+}*/
 @media (max-width: 700px) {
   .signature {
     position: static;
