@@ -12,13 +12,12 @@
     justify-content: center;
     font-size: 1.8rem;
     font-family: 'Courier New', Courier, monospace;
-    z-index: 10000;
+    z-index: 10000; /* Muy alto para estar encima de todo */
     cursor: pointer;
     text-align: center;
     padding: 20px;
-    pointer-events: none; /* Asegura que este elemento no interfiera con el scroll */
+    overflow: auto; /* Para permitir el scroll dentro de este contenedor */
 }
-
 
 #main-content {
     display: block; /* Si es necesario para que se vea */
