@@ -415,6 +415,8 @@ function showCountdown() {
   setInterval(update, 1000);  // Actualiza cada segundo
 }
 
+//########################################INICIO AUTOMATICO DE LA CANCION AL QUITAR LA PANTALLA DE INICIO########################################
+
 let musicInitialized = false; // Bandera para asegurar que la música se inicializa solo una vez
 
 // --- Música de fondo ---
@@ -425,14 +427,12 @@ function playBackgroundMusic() {
   const audio = document.getElementById('bg-music');
   if (!audio) return;
 
-
   // --- Opción archivo local por parámetro 'musica' ---
   let musicaParam = getURLParam('musica');
   if (musicaParam) {
     // Decodifica y previene rutas maliciosas
     musicaParam = decodeURIComponent(musicaParam).replace(/[^\w\d .\-]/g, '');
     audio.src = 'Music/' + musicaParam;
-  } else {
   }
 
   // --- Opción YouTube (solo mensaje de ayuda) ---
@@ -455,7 +455,7 @@ function playBackgroundMusic() {
       helpMsg.style.zIndex = 100;
       helpMsg.innerHTML = 'Para usar música de YouTube, descarga el audio (por ejemplo, usando y2mate, 4K Video Downloader, etc.), colócalo en la carpeta <b>Music</b> y usa la URL así:<br><br><code>?musica=nombre.mp3</code>';
       document.body.appendChild(helpMsg);
-      setTimeout(() => { if(helpMsg) helpMsg.remove(); }, 15000);
+      setTimeout(() => { if (helpMsg) helpMsg.remove(); }, 15000);
     }
   }
 
@@ -475,18 +475,13 @@ function playBackgroundMusic() {
     btn.style.cursor = 'pointer';
     document.body.appendChild(btn);
   }
+
   // Estado inicial del botón antes de intentar reproducir
   if (btn && audio.paused) btn.textContent = '▶️ Música';
 
   audio.volume = 0.7;
   audio.loop = true;
 
-  const removeGeneralInteractionListeners = () => {
-    eventListenersConfig.forEach(listener => {
-      listener.target.removeEventListener(listener.type, listener.handler, listener.options || false);
-    });
-    listenersAttached = false;
-  };
   let listenersAttached = false;
 
   // Función para intentar reproducir y actualizar el botón
@@ -533,7 +528,7 @@ function playBackgroundMusic() {
             interactionShouldAttemptPlay = true;
         }
     }
-    
+
     if (!interactionShouldAttemptPlay) {
         return;
     }
@@ -568,20 +563,23 @@ function playBackgroundMusic() {
   };
 
   // Renombrar para claridad, ya que se usa arriba.
-  const removeGeneralEventListeners = removeGeneralInteractionListeners;
+  const removeGeneralEventListeners = () => {
+    eventListenersConfig.forEach(listener => {
+      listener.target.removeEventListener(listener.type, listener.handler, listener.options || false);
+    });
+    listenersAttached = false;
+  };
 
   // Intentar reproducir inmediatamente (autoplay)
   audio.play().then(() => {
     // Autoplay fue "exitoso" según el navegador (la promesa se resolvió)
     if (btn) btn.textContent = '🔊 Música';
 
-
     setTimeout(() => {
       if (audio.paused) {
         // Autoplay falló silenciosamente o el navegador lo pausó.
         if (btn) btn.textContent = '▶️ Música'; // Corregir el estado del botón
         addGeneralEventListeners();
-      } else {
       }
     }, 100); // Pequeño delay para verificar el estado real
 
@@ -609,3 +607,200 @@ function playBackgroundMusic() {
     };
   }
 }
+
+//########################################Codigo original de respaldo########################################
+
+// let musicInitialized = false; // Bandera para asegurar que la música se inicializa solo una vez
+
+// // --- Música de fondo ---
+// function playBackgroundMusic() {
+//   if (musicInitialized) return; // Si ya se inicializó, no hacer nada más
+//   musicInitialized = true;
+
+//   const audio = document.getElementById('bg-music');
+//   if (!audio) return;
+
+
+//   // --- Opción archivo local por parámetro 'musica' ---
+//   let musicaParam = getURLParam('musica');
+//   if (musicaParam) {
+//     // Decodifica y previene rutas maliciosas
+//     musicaParam = decodeURIComponent(musicaParam).replace(/[^\w\d .\-]/g, '');
+//     audio.src = 'Music/' + musicaParam;
+//   } else {
+//   }
+
+//   // --- Opción YouTube (solo mensaje de ayuda) ---
+//   let youtubeParam = getURLParam('youtube');
+//   if (youtubeParam) {
+//     // Muestra mensaje de ayuda para descargar el audio
+//     let helpMsg = document.getElementById('yt-help-msg');
+//     if (!helpMsg) {
+//       helpMsg = document.createElement('div');
+//       helpMsg.id = 'yt-help-msg';
+//       helpMsg.style.position = 'fixed';
+//       helpMsg.style.right = '18px';
+//       helpMsg.style.bottom = '180px';
+//       helpMsg.style.background = 'rgba(255,255,255,0.95)';
+//       helpMsg.style.color = '#e60026';
+//       helpMsg.style.padding = '10px 16px';
+//       helpMsg.style.borderRadius = '12px';
+//       helpMsg.style.boxShadow = '0 2px 8px #e6002633';
+//       helpMsg.style.fontSize = '1.05em';
+//       helpMsg.style.zIndex = 100;
+//       helpMsg.innerHTML = 'Para usar música de YouTube, descarga el audio (por ejemplo, usando y2mate, 4K Video Downloader, etc.), colócalo en la carpeta <b>Music</b> y usa la URL así:<br><br><code>?musica=nombre.mp3</code>';
+//       document.body.appendChild(helpMsg);
+//       setTimeout(() => { if(helpMsg) helpMsg.remove(); }, 15000);
+//     }
+//   }
+
+//   let btn = document.getElementById('music-btn');
+//   if (!btn) {
+//     btn = document.createElement('button');
+//     btn.id = 'music-btn'; // El texto se establecerá después del intento de play
+//     btn.style.position = 'fixed';
+//     btn.style.bottom = '18px';
+//     btn.style.right = '18px';
+//     btn.style.zIndex = 99;
+//     btn.style.background = 'rgba(255,255,255,0.85)';
+//     btn.style.border = 'none';
+//     btn.style.borderRadius = '24px';
+//     btn.style.padding = '10px 18px';
+//     btn.style.fontSize = '1.1em';
+//     btn.style.cursor = 'pointer';
+//     document.body.appendChild(btn);
+//   }
+//   // Estado inicial del botón antes de intentar reproducir
+//   if (btn && audio.paused) btn.textContent = '▶️ Música';
+
+//   audio.volume = 0.7;
+//   audio.loop = true;
+
+//   const removeGeneralInteractionListeners = () => {
+//     eventListenersConfig.forEach(listener => {
+//       listener.target.removeEventListener(listener.type, listener.handler, listener.options || false);
+//     });
+//     listenersAttached = false;
+//   };
+//   let listenersAttached = false;
+
+//   // Función para intentar reproducir y actualizar el botón
+//   const tryPlayAudioAndUpdateButton = () => {
+//     if (audio.paused) {
+//       audio.play().then(() => {
+//         if (btn) btn.textContent = '🔊 Música';
+//         removeGeneralEventListeners(); // Usar el nombre correcto de la función
+//       }).catch(() => {
+//         if (btn) btn.textContent = '▶️ Música';
+//       });
+//     } else {
+//       // Si ya está sonando, asegurarse de que los listeners se hayan ido.
+//       if (btn) btn.textContent = '🔊 Música'; // Asegurar que el botón refleje el estado
+//       removeGeneralEventListeners(); // Usar el nombre correcto de la función
+//     }
+//   };
+
+//   // Manejador para la primera interacción general del usuario (click, touch, scroll)
+//   const handleGeneralInteraction = (event) => {
+//     const target = event.target;
+//     const treeContainer = document.getElementById('tree-container'); // El div que contiene el SVG
+//     const dedicationTextEl = document.getElementById('dedication-text');
+
+//     // 1. Ignorar si el evento es en el botón de música
+//     if (event && btn && (event.target === btn || btn.contains(event.target))) {
+//       return;
+//     }
+
+//     // 2. Condición para touchmove (ignorar si es un solo dedo deslizando sin ser scroll)
+//     if (event.type === 'touchmove' && (!event.touches || event.touches.length < 2)) {
+//         return;
+//     }
+
+//     // 3. Determinar si la interacción es válida para iniciar música
+//     let interactionShouldAttemptPlay = false;
+//     if (event.type === 'scroll') { // Scroll en la ventana
+//         interactionShouldAttemptPlay = true;
+//     } else if (event.type === 'click' || event.type === 'touchstart' || (event.type === 'touchmove' && event.touches && event.touches.length >=2) ) {
+//         // Para click, touchstart, o zoom (touchmove con >=2 dedos)
+//         if ((treeContainer && treeContainer.contains(target)) || // Dentro del SVG/su contenedor
+//             (dedicationTextEl && dedicationTextEl.contains(target)) || // Dentro de la dedicatoria
+//             target === document.body || target === document.documentElement) { // Clic/toque directo en body/html (fondo)
+//             interactionShouldAttemptPlay = true;
+//         }
+//     }
+    
+//     if (!interactionShouldAttemptPlay) {
+//         return;
+//     }
+
+//     // Si es una interacción válida:
+//     if (audio.paused) {
+//       audio.play().then(() => {
+//         if (btn) btn.textContent = '🔊 Música';
+//         removeGeneralEventListeners(); 
+//       }).catch(() => {
+//         if (btn) btn.textContent = '▶️ Música';
+//         removeGeneralEventListeners(); // Quitar listeners incluso si este intento falla, para que solo el botón quede.
+//       });
+//     } else {
+//       removeGeneralEventListeners();
+//     }
+//   };
+
+//   const eventListenersConfig = [
+//     { target: document, type: 'click', handler: handleGeneralInteraction },
+//     { target: document, type: 'touchstart', handler: handleGeneralInteraction, options: { passive: true } },
+//     { target: window, type: 'scroll', handler: handleGeneralInteraction, options: { passive: true } },
+//     { target: document, type: 'touchmove', handler: handleGeneralInteraction, options: { passive: true } },
+//   ];
+
+//   const addGeneralEventListeners = () => {
+//     if (listenersAttached) return;
+//     eventListenersConfig.forEach(listener => {
+//       listener.target.addEventListener(listener.type, listener.handler, listener.options || false);
+//     });
+//     listenersAttached = true;
+//   };
+
+//   // Renombrar para claridad, ya que se usa arriba.
+//   const removeGeneralEventListeners = removeGeneralInteractionListeners;
+
+//   // Intentar reproducir inmediatamente (autoplay)
+//   audio.play().then(() => {
+//     // Autoplay fue "exitoso" según el navegador (la promesa se resolvió)
+//     if (btn) btn.textContent = '🔊 Música';
+
+
+//     setTimeout(() => {
+//       if (audio.paused) {
+//         // Autoplay falló silenciosamente o el navegador lo pausó.
+//         if (btn) btn.textContent = '▶️ Música'; // Corregir el estado del botón
+//         addGeneralEventListeners();
+//       } else {
+//       }
+//     }, 100); // Pequeño delay para verificar el estado real
+
+//   }).catch(() => {
+//     // Autoplay falló.
+//     if (btn) btn.textContent = '▶️ Música';
+//     // Adjuntar listeners para la primera interacción del usuario si el autoplay falla.
+//     addGeneralEventListeners();
+//   });
+
+//   // Lógica del botón de música
+//   if (btn) {
+//     btn.onclick = () => {
+//       if (audio.paused) {
+//         audio.play().then(() => { // El botón también usa la misma lógica de reproducción y limpieza
+//           if (btn) btn.textContent = '🔊 Música';
+//           removeGeneralEventListeners();
+//         }).catch(() => {
+//           if (btn) btn.textContent = '▶️ Música';
+//         });
+//       } else {
+//         audio.pause();
+//         btn.textContent = '🔈 Música';
+//       }
+//     };
+//   }
+// }

@@ -28,10 +28,11 @@ body {
     height: auto;  /* No fijes la altura en 100vh */
     min-height: 100%;  /* Asegúrate de que el contenido se ajuste en altura */
     background: #fcfcfc;
-    overflow-x: auto;  /* Permite el desplazamiento horizontal */
-    overflow-y: scroll; /* Permite el desplazamiento vertical */
+    overflow-x: auto;  /* Solo desplazamiento horizontal si es necesario */
+    overflow-y: scroll; /* Siempre mostrar desplazamiento vertical */
     touch-action: auto; /* Permitir el desplazamiento en todas direcciones */
-    -webkit-overflow-scrolling: touch; /* Para iOS */
+    -webkit-overflow-scrolling: touch; /* Habilitar el desplazamiento suave en iOS */
+    box-sizing: border-box;
 }
 
 html, body {
@@ -169,10 +170,10 @@ body {
   transform: translateX(-50%) translateY(0);
 }
 
-/* Ajusta los pétalos flotantes */
+/* Pétalos flotantes ajustados para móvil */
 .floating-petal {
-  width: 13px;
-  height: 18px;
+    width: 13px;
+    height: 18px;
 }
 
 svg {
@@ -519,22 +520,53 @@ svg {
 }
 
 /* Responsivo para móviles: la caja ocupa casi todo el ancho arriba del árbol */
-@media (max-width: 700px) {
-  .dedication-text {
-    left: 50%;
-    right: auto;
-    top: 8%;
-    transform: translateX(-50%) translateY(0);
-    min-width: 0;
-    max-width: 95vw;
-    width: 95vw;
-    font-size: 1.1rem;
-    padding: 0.7em 0.7em 0.7em 0.7em;
-  }
-  .signature {
-    font-size: 1.3rem;
-  }
+/* Adaptación para pantallas más pequeñas (móviles) */
+@media (max-width: 600px) {
+    /* Adaptación de la firma */
+    .signature {
+        font-size: 1.1rem;
+        padding: 1em;
+    }
+
+    /* Adaptación de la dedicación y árbol */
+    .dedication-text {
+        font-size: 0.95rem;
+        max-width: 90vw;
+    }
+
+    .tree-container {
+        width: 75vw;  /* Ancho dinámico dependiendo del tamaño de la pantalla */
+        height: 75vw; /* Altura también ajustada */
+    }
+
+    /* Ajustar el contador de cuenta regresiva */
+    .countdown {
+        position: fixed;
+        left: 50%;
+        bottom: 10vw;
+        transform: translateX(-50%);
+        font-size: 0.98rem;
+        min-width: 60vw;
+        max-width: 92vw;
+        text-align: center;
+        padding: 0.5em 0.7em;
+        border-radius: 1em;
+        background: #fff8;
+        box-shadow: 0 2px 8px #e6002611;
+        z-index: 6;
+        pointer-events: none;
+        letter-spacing: 0.05em;
+        transition: opacity 0.8s cubic-bezier(.77,0,.18,1), transform 0.8s cubic-bezier(.77,0,.18,1);
+        opacity: 0;
+        transform: translateX(-50%) translateY(30px);
+    }
+
+    .countdown.visible {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
 }
+
 
 
 /****************************Aqui la firma modificada********************************************+*/
