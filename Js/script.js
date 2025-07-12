@@ -123,18 +123,44 @@ function showCountdown() {
 }
 
 // Iniciar la experiencia al hacer clic en la pantalla de inicio
+// document.addEventListener('DOMContentLoaded', () => {
+//   const startScreen = document.getElementById('start-screen');
+//   const mainContent = document.getElementById('main-content');
+
+//   function initExperience() {
+//     if (startScreen) startScreen.style.display = 'none';
+//     if (mainContent) mainContent.style.display = 'block';
+    
+//     startMainExperience(); 
+    
+//     // Esta llamada asegura que la música intente reproducirse justo después de que se descarte la pantalla de inicio.
+//     // playBackgroundMusic tiene su propia bandera 'musicInitialized'.
+//     playBackgroundMusic(); 
+//   }
+
+//   if (startScreen) {
+//     startScreen.addEventListener('click', initExperience, { once: true });
+//     startScreen.addEventListener('touchstart', initExperience, { once: true, passive: true });
+//   } else {
+//     // Fallback si no se encuentra start-screen
+//     initExperience();
+//   }
+// });
 document.addEventListener('DOMContentLoaded', () => {
   const startScreen = document.getElementById('start-screen');
   const mainContent = document.getElementById('main-content');
 
   function initExperience() {
-    if (startScreen) startScreen.style.display = 'none';
+    if (startScreen) {
+      startScreen.style.transition = "opacity 0.5s";
+      startScreen.style.opacity = "0";
+      setTimeout(() => {
+        startScreen.style.display = 'none';
+      }, 500); // Espera a que la animación termine
+    }
     if (mainContent) mainContent.style.display = 'block';
     
     startMainExperience(); 
-    
-    // Esta llamada asegura que la música intente reproducirse justo después de que se descarte la pantalla de inicio.
-    // playBackgroundMusic tiene su propia bandera 'musicInitialized'.
     playBackgroundMusic(); 
   }
 
@@ -142,10 +168,11 @@ document.addEventListener('DOMContentLoaded', () => {
     startScreen.addEventListener('click', initExperience, { once: true });
     startScreen.addEventListener('touchstart', initExperience, { once: true, passive: true });
   } else {
-    // Fallback si no se encuentra start-screen
     initExperience();
   }
 });
+
+
 
 // Efecto máquina de escribir para el texto de dedicatoria (seguidores)
 function showDedicationText() {
