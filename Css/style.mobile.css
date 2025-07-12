@@ -1,7 +1,10 @@
-/*© Zero - Código libre no comercial*/
-
+/* Reglas generales */
 body {
   font-size: 16px;
+  overflow-x: auto;  /* Permite el desplazamiento horizontal */
+  overflow-y: scroll; /* Permite el desplazamiento vertical */
+  touch-action: auto; /* Permitir el desplazamiento en todas direcciones */
+  -webkit-overflow-scrolling: touch; /* Para iOS */
 }
 
 .tree-container {
@@ -36,7 +39,7 @@ body {
   left: 50%;
   transform: translateX(-50%);
   max-width: 92vw;
-  font-size: 1.05rem;
+  font-size: 4vw;
   text-align: center;
   color: #000000;
   font-family: 'Courier New', Courier, monospace;
@@ -44,7 +47,11 @@ body {
   z-index: 3;
   opacity: 0;
   pointer-events: none;
+  overflow: auto;  /* Habilitar el scroll cuando el contenido se desborde */
+  max-height: 80vh; /* Limita la altura máxima en la orientación vertical */
+  height: auto; /* Ajusta la altura dependiendo del contenido */
 }
+
 
 .signature {
   position: static;
@@ -75,6 +82,40 @@ body {
     text-align: center;
   }
 }
+
+@media (orientation: portrait) {
+  body {
+    overflow-y: auto;  /* Permitir desplazamiento vertical */
+    height: 100vh; /* Ajusta la altura del body en pantalla vertical */
+  }
+
+  .dedication-text {
+    max-height: 80vh;  /* Limitar la altura del contenedor para que no se desborde */
+    height: auto;      /* Ajusta la altura dependiendo del contenido */
+    font-size: 4vw;    /* Tamaño de fuente adecuado en orientación vertical */
+  }
+
+  .countdown {
+    bottom: 8vw;  /* Ajuste la posición del contador en orientación vertical */
+  }
+}
+
+@media (orientation: landscape) {
+  body {
+    overflow-x: auto;  /* Permitir desplazamiento horizontal en pantallas horizontales */
+  }
+
+  .dedication-text {
+    max-height: 60vh;  /* Ajuste la altura máxima del contenedor en orientación horizontal */
+    height: auto;      /* Ajusta la altura dependiendo del contenido */
+    font-size: 3vw;    /* Tamaño de fuente adecuado en orientación horizontal */
+  }
+
+  .countdown {
+    bottom: 6vw;  /* Ajuste la posición del contador en orientación horizontal */
+  }
+}
+
 
 .countdown {
   position: fixed;

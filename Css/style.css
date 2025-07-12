@@ -28,8 +28,10 @@ body {
     height: auto;  /* No fijes la altura en 100vh */
     min-height: 100%;  /* Asegúrate de que el contenido se ajuste en altura */
     background: #fcfcfc;
-    overflow-x: auto; /* Evita que se desplace horizontalmente */
+    overflow-x: auto;  /* Permite el desplazamiento horizontal */
     overflow-y: scroll; /* Permite el desplazamiento vertical */
+    touch-action: auto; /* Permitir el desplazamiento en todas direcciones */
+    -webkit-overflow-scrolling: touch; /* Para iOS */
 }
 
 html, body {
@@ -39,7 +41,12 @@ html, body {
 
 body {
   font-size: 16px;
+  overflow-x: auto;  /* Permite el desplazamiento horizontal */
+  overflow-y: scroll; /* Permite el desplazamiento vertical */
+  touch-action: auto; /* Permitir el desplazamiento en todas direcciones */
+  -webkit-overflow-scrolling: touch; /* Para iOS */
 }
+
 
 .tree-container {
   width: 92vw !important;
