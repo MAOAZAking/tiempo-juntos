@@ -104,6 +104,24 @@ body {
   text-align: center;
 }
 
+/* @media (max-width: 700px) {
+    body {
+        overflow: auto; /* Permite desplazamiento en ambas direcciones */
+    /*}
+
+    .dedication-text {
+        position: absolute;
+        top: 10vh; /* Espacio superior para evitar que el texto se pegue al borde */
+        /*left: 50%;
+        transform: translateX(-50%);
+        max-width: 95vw; /* Ajusta el ancho en pantallas más pequeñas */
+        /*font-size: 1.1rem;
+        max-height: 80vh; /* Ajusta la altura */
+        /*overflow: auto; /* Permite desplazamiento tanto vertical como horizontal */
+        /*padding: 1em;
+        box-sizing: border-box;
+    }
+}*/
 @media (max-width: 700px) {
   .signature {
     position: static;
