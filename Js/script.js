@@ -1,57 +1,57 @@
-// Elementos clave
-const orientationWarning = document.getElementById('orientation-warning');
-const orientationVideo = document.getElementById('orientacionVideo');
-const body = document.body;
-const musica = document.getElementById('bg-music');
+// // Elementos clave
+// const orientationWarning = document.getElementById('orientation-warning');
+// const orientationVideo = document.getElementById('orientacionVideo');
+// const body = document.body;
+// const musica = document.getElementById('bg-music');
 
-let musicaPausadaPorOrientacion = false;
+// let musicaPausadaPorOrientacion = false;
 
-// Función para pausar todo al estar en vertical
-function pausarTodoPorOrientacion() {
-  orientationWarning.style.display = 'flex';
-  body.classList.add('pausar-animaciones');
+// // Función para pausar todo al estar en vertical
+// function pausarTodoPorOrientacion() {
+//   orientationWarning.style.display = 'flex';
+//   body.classList.add('pausar-animaciones');
 
-  if (musica && !musica.paused) {
-    musica.pause();
-    musicaPausadaPorOrientacion = true;
-  }
+//   if (musica && !musica.paused) {
+//     musica.pause();
+//     musicaPausadaPorOrientacion = true;
+//   }
 
-  document.body.style.pointerEvents = 'none'; // Bloquear interacción
-}
+//   document.body.style.pointerEvents = 'none'; // Bloquear interacción
+// }
 
-// Función para reanudar al volver a horizontal
-function reanudarTodoPorOrientacion() {
-  orientationWarning.style.display = 'none';
-  body.classList.remove('pausar-animaciones');
+// // Función para reanudar al volver a horizontal
+// function reanudarTodoPorOrientacion() {
+//   orientationWarning.style.display = 'none';
+//   body.classList.remove('pausar-animaciones');
 
-  document.body.style.pointerEvents = 'auto'; // Restaurar interacción
+//   document.body.style.pointerEvents = 'auto'; // Restaurar interacción
 
-  if (musicaPausadaPorOrientacion && musica) {
-    try {
-      musica.play();
-    } catch (e) {
-      // Algunas políticas de autoplay podrían bloquearlo
-      console.warn("La música no se pudo reproducir automáticamente:", e);
-    }
-    musicaPausadaPorOrientacion = false;
-  }
-}
+//   if (musicaPausadaPorOrientacion && musica) {
+//     try {
+//       musica.play();
+//     } catch (e) {
+//       // Algunas políticas de autoplay podrían bloquearlo
+//       console.warn("La música no se pudo reproducir automáticamente:", e);
+//     }
+//     musicaPausadaPorOrientacion = false;
+//   }
+// }
 
-// Verifica orientación actual y aplica lógica
-function verificarOrientacion() {
-  const esVertical = window.innerHeight > window.innerWidth;
+// // Verifica orientación actual y aplica lógica
+// function verificarOrientacion() {
+//   const esVertical = window.innerHeight > window.innerWidth;
 
-  if (esVertical) {
-    pausarTodoPorOrientacion();
-  } else {
-    reanudarTodoPorOrientacion();
-  }
-}
+//   if (esVertical) {
+//     pausarTodoPorOrientacion();
+//   } else {
+//     reanudarTodoPorOrientacion();
+//   }
+// }
 
-// Detectar cambios de orientación
-window.addEventListener("load", verificarOrientacion);
-window.addEventListener("resize", verificarOrientacion);
-window.addEventListener("orientationchange", verificarOrientacion);
+// // Detectar cambios de orientación
+// window.addEventListener("load", verificarOrientacion);
+// window.addEventListener("resize", verificarOrientacion);
+// window.addEventListener("orientationchange", verificarOrientacion);
 
 ///////////////////////////////////Abajo esta lo original//////////////////////////////////////////////////////////////////////
 
@@ -664,6 +664,135 @@ function playBackgroundMusic() {
     };
   }
 }
+
+// ===============================
+// CONFIGURACIÓN INICIAL
+// ===============================
+
+const orientationWarning = document.getElementById('orientation-warning');
+const orientationVideo = document.getElementById('orientacionVideo');
+const body = document.body;
+const musica = document.getElementById('bg-music');
+
+let musicaPausadaPorOrientacion = false;
+let animacionesPausadas = false;
+let escrituraActiva = false;
+let intervaloEscritura = null;
+let contenidoEscritura = "";
+let indiceEscritura = 0;
+
+const elementoTexto = document.getElementById("dedicatoria"); // Ajusta si tu ID es otro
+
+// ===============================
+// ESCRITURA TIPO MÁQUINA
+// ===============================
+
+function iniciarEscritura(textoCompleto) {
+  contenidoEscritura = textoCompleto;
+  indiceEscritura = 0;
+  escrituraActiva = true;
+  elementoTexto.innerHTML = "";
+
+  intervaloEscritura = setInterval(() => {
+    if (indiceEscritura < contenidoEscritura.length && !animacionesPausadas) {
+      elementoTexto.innerHTML += contenidoEscritura.charAt(indiceEscritura);
+      indiceEscritura++;
+    } else {
+      clearInterval(intervaloEscritura);
+      escrituraActiva = false;
+    }
+  }, 100);
+}
+
+// Llama esta función después de mostrar la carta, por ejemplo:
+// iniciarEscritura("Querida mamá, gracias por todo tu amor...");
+
+
+// ===============================
+// PAUSA GENERAL POR ORIENTACIÓN
+// ===============================
+
+function pausarTodoPorOrientacion() {
+  orientationWarning.style.display = 'flex';
+  body.classList.add('pausar-animaciones');
+
+  // Pausar música
+  if (musica && !musica.paused) {
+    musica.pause();
+    musicaPausadaPorOrientacion = true;
+  }
+
+  // Pausar escritura
+  animacionesPausadas = true;
+
+  // Detener animaciones con estilo
+  document.querySelectorAll("*").forEach(el => {
+    el.style.animationPlayState = "paused";
+    el.style.transition = "none";
+  });
+
+  // Evitar interacción
+  document.body.style.pointerEvents = 'none';
+}
+
+// ===============================
+// REANUDAR AL VOLVER A HORIZONTAL
+// ===============================
+
+function reanudarTodoPorOrientacion() {
+  orientationWarning.style.display = 'none';
+  body.classList.remove('pausar-animaciones');
+
+  // Restaurar interacción
+  document.body.style.pointerEvents = 'auto';
+
+  // Reanudar música si estaba pausada por orientación
+  if (musicaPausadaPorOrientacion && musica) {
+    try {
+      musica.play();
+    } catch (e) {
+      console.warn("La música no se pudo reproducir automáticamente:", e);
+    }
+    musicaPausadaPorOrientacion = false;
+  }
+
+  // Reanudar escritura
+  animacionesPausadas = false;
+
+  if (escrituraActiva && intervaloEscritura === null) {
+    iniciarEscritura(contenidoEscritura);
+  }
+
+  // Restaurar animaciones
+  document.querySelectorAll("*").forEach(el => {
+    el.style.animationPlayState = "running";
+    el.style.transition = "";
+  });
+}
+
+// ===============================
+// VERIFICAR ORIENTACIÓN
+// ===============================
+
+function verificarOrientacion() {
+  const esVertical = window.innerHeight > window.innerWidth;
+
+  if (esVertical) {
+    pausarTodoPorOrientacion();
+  } else {
+    reanudarTodoPorOrientacion();
+  }
+}
+
+// ===============================
+// EVENTOS
+// ===============================
+
+window.addEventListener("load", verificarOrientacion);
+window.addEventListener("resize", verificarOrientacion);
+window.addEventListener("orientationchange", verificarOrientacion);
+
+
 
 //########################################Codigo original de respaldo########################################
 
