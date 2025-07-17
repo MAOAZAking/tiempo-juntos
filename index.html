@@ -56,9 +56,13 @@
 
 </head>
 <body>
-    <div id="orientation-warning">
-      🔄 Por favor, gira tu celular a <b>posición horizontal</b> para continuar.
+    <div id="orientation-warning" style="display: none;">
+      <div class="orientation-overlay">
+        <video id="orientation-video" muted autoplay loop playsinline></video>
+        <p>Por favor, gira tu dispositivo a horizontal para continuar.</p>
+      </div>
     </div>
+
     
     <div id="start-screen">
         Da clic para ver el contenido
