@@ -1,3 +1,69 @@
+//
+// URL directa del video desde Google Drive
+const videoURL = "https://drive.google.com/uc?export=download&id=1i9bWb61Mvp96kVtiqHUkdpWeCmMQagkq";
+
+// Referencias
+const orientationWarning = document.getElementById("orientation-warning");
+const orientationVideo = document.getElementById("orientation-video");
+
+// Variables de estado
+let musicaPausadaPorOrientacion = false;
+let animacionesPausadas = false;
+
+// Pausa todo (llámala cuando se muestre la advertencia)
+function pausarTodoPorOrientacion() {
+    // Pausar música
+    if (typeof backgroundMusic !== "undefined" && !backgroundMusic.paused) {
+        backgroundMusic.pause();
+        musicaPausadaPorOrientacion = true;
+    }
+
+    // Detener animaciones CSS (añadir clase o eliminar animaciones)
+    document.body.classList.add("pausar-animaciones");
+    animacionesPausadas = true;
+
+    // Mostrar capa de advertencia
+    orientationWarning.style.display = "flex";
+
+    // Cargar video (solo una vez)
+    if (!orientationVideo.src) {
+        orientationVideo.src = videoURL;
+    }
+}
+
+// Reanuda todo cuando se gire horizontal
+function reanudarTodoPorOrientacion() {
+    // Reanudar música si se pausó
+    if (musicaPausadaPorOrientacion && typeof backgroundMusic !== "undefined") {
+        backgroundMusic.play();
+        musicaPausadaPorOrientacion = false;
+    }
+
+    // Reanudar animaciones
+    document.body.classList.remove("pausar-animaciones");
+    animacionesPausadas = false;
+
+    // Ocultar advertencia
+    orientationWarning.style.display = "none";
+}
+
+// Verificar orientación
+function verificarOrientacion() {
+    const orientacionEsVertical = window.innerHeight > window.innerWidth;
+    if (orientacionEsVertical) {
+        pausarTodoPorOrientacion();
+    } else {
+        reanudarTodoPorOrientacion();
+    }
+}
+
+// Listener inicial
+window.addEventListener("resize", verificarOrientacion);
+window.addEventListener("orientationchange", verificarOrientacion);
+window.addEventListener("load", verificarOrientacion);
+
+///////////////////////////////////Abajo esta lo original//////////////////////////////////////////////////////////////////////
+
 // Control de la experiencia principal
 let mainExperienceStarted = false;
 
