@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Tiempo Junto a 🩵😍Mi amorcito Lindo😘🤍</title>
+
+    <!-- Meta etiquetas de autoría y derechos -->
+    <meta name="author" content="Zero">
+    <meta name="copyright" content="MAOAZA_king">
+    <meta name="description" content="Es dedicado a mi prometida, un regalo digital lleno de amor y sorpresas, el cual lleva contando el tiempo exacto que llevamos juntos.">
+    <meta name="keywords" content="amor, sorpresa, romántico, dedicatoria, animación, árbol, corazones, pareja, aniversario, regalo digital">
+    <meta name="robots" content="index, follow">
+    <meta name="apple-mobile-web-app-capable" content="yes"> <!-- Habilitar la web app en iOS -->
+
+    <!-- Estilos -->
+    <link rel="stylesheet" href="Css/style.css">
+    <link rel="stylesheet" href="Css/style.mobile.css" media="only screen and (max-width: 600px)">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Color+Emoji&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Italianno&display=swap" rel="stylesheet">
+
+    <style>
+      /* Ajustes globales para compatibilidad móvil */
+      body {
+          font-family: 'Arial', sans-serif;
+          overflow-x: auto;  /* Evitar desplazamiento horizontal innecesario */
+          overflow-y: scroll; /* Siempre mostrar barra de desplazamiento vertical */
+          touch-action: auto; /* Permitir el desplazamiento en todas direcciones */
+      }
+
+      /* Asegurar que el contenedor se vea bien en iOS y Android */
+      .tree-container {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 400px;
+        height: 400px;
+        z-index: 2;
+      }
+
+      .animated-heart {
+        transform-origin: center;
+        animation: beat 1s infinite;
+      }
+
+      @keyframes beat {
+        0%, 100% { transform: scale(1); }
+        20% { transform: scale(1.1); }
+        40% { transform: scale(0.95); }
+        60% { transform: scale(1.08); }
+        80% { transform: scale(1); }
+      }
+    </style>
+
+</head>
+<body>
+    <div id="start-screen">
+        Da clic para ver el contenido
+    </div>
+
+    <div id="main-content">
+        <div id="floating-objects"></div>
+        <div class="dedication-text" id="dedication-text">
+            <div class="signature" id="signature"></div>
+        </div>
+        <div class="countdown" id="countdown"></div>
+        <div class="tree-container" id="tree-container"></div>
+    </div>
+
+    <audio id="bg-music" preload="auto">
+        <source src="Music/Ed Sheeran - Perfect.mp3" type="audio/mp3">
+    </audio>
+
+    <script src="Js/script.js"></script>
+</body>
+</html>
