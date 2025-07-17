@@ -1,4 +1,21 @@
-      #start-screen {
+  #orientation-warning {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: black;
+    color: white;
+    font-size: 24px;
+    z-index: 999999; /* mayor que cualquier otra pantalla */
+    display: none;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+  }
+
+#start-screen {
         position: fixed;
         top: 0;
         left: 0;
