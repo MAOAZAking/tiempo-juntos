@@ -1,3 +1,4 @@
+/* --- Alerta de orientación vertical --- */
 #orientation-warning {
   position: fixed;
   z-index: 99999;
@@ -6,25 +7,46 @@
   width: 100vw;
   height: 100vh;
   background-color: black;
-  display: flex;
+  display: none; /* Se activa solo con JS */
   justify-content: center;
   align-items: center;
+  flex-direction: column;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
+/* Contenedor del contenido del overlay */
 .orientation-overlay {
   text-align: center;
   color: white;
   font-size: 1.5rem;
-  pointer-events: none;
+  pointer-events: none; /* evita que interfiera con el resto del sitio */
 }
 
+/* Video de advertencia */
 .orientation-overlay video {
-  max-width: 80vw;
-  max-height: 40vh;
+  max-width: 90vw;
+  max-height: 45vh;
   margin-bottom: 20px;
-  pointer-events: none;
+  pointer-events: none; /* no debe ser interactivo */
+  object-fit: contain;
+  display: block;
+  border-radius: 10px;
 }
 
+/* ✅ Pausa TODAS las animaciones y transiciones cuando se aplica esta clase al <body> */
+.pausar-animaciones *, 
+.pausar-animaciones *::before,
+.pausar-animaciones *::after {
+  animation-play-state: paused !important;
+  transition: none !important;
+}
+
+/* Opcional: evitar scroll o zoom mientras está activa la advertencia */
+body.pausar-animaciones {
+  overflow: hidden !important;
+  touch-action: none !important;
+}
 
 #start-screen {
         position: fixed;
