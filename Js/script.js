@@ -56,7 +56,23 @@
 ///////////////////////////////////Abajo esta lo original//////////////////////////////////////////////////////////////////////
 
 // Control de la experiencia principal
-let mainExperienceStarted = false;
+// === VARIABLES GLOBALES NECESARIAS ===
+let musicaPausadaPorOrientacion = false;
+let animacionesPausadas = false;
+let escrituraActiva = false;
+let intervaloEscritura = null;
+let contenidoEscritura = "";
+
+let orientationWarning, orientationVideo, body, musica;
+
+// Esperar a que el DOM esté listo para acceder a los elementos
+window.addEventListener("DOMContentLoaded", () => {
+  orientationWarning = document.getElementById('orientation-warning');
+  orientationVideo = document.getElementById('orientacionVideo');
+  body = document.body;
+  musica = document.getElementById('bg-music');
+});
+
 
 function startMainExperience() {
   if (mainExperienceStarted) return;
@@ -712,41 +728,70 @@ function iniciarEscritura(textoCompleto) {
 // PAUSA GENERAL POR ORIENTACIÓN
 // ===============================
 
+// === BLOQUE DE ORIENTACIÓN Y PAUSA GLOBAL ===
+
+let musicaPausadaPorOrientacion = false;
+let animacionesPausadas = false;
+let escrituraActiva = false;
+
+// Función para pausar animaciones CSS
+function pausarAnimacionesCSS() {
+  document.querySelectorAll("*").forEach(el => {
+    const anim = window.getComputedStyle(el).animationPlayState;
+    if (anim === "running") {
+      el.dataset.originalAnimation = "running";
+      el.style.animationPlayState = "paused";
+    }
+  });
+  animacionesPausadas = true;
+}
+
+// Función para reanudar animaciones CSS
+function reanudarAnimacionesCSS() {
+  document.querySelectorAll("*").forEach(el => {
+    if (el.dataset.originalAnimation === "running") {
+      el.style.animationPlayState = "running";
+      delete el.dataset.originalAnimation;
+    }
+  });
+  animacionesPausadas = false;
+}
+
+// Función para pausar escritura máquina (si está activa)
+function pausarEscrituraMaquina() {
+  if (typeof pausarEscritura === 'function') {
+    pausarEscritura();
+    escrituraActiva = true;
+  }
+}
+
+// Función para reanudar escritura máquina (si se pausó)
+function reanudarEscrituraMaquina() {
+  if (escrituraActiva && typeof reanudarEscritura === 'function') {
+    reanudarEscritura();
+    escrituraActiva = false;
+  }
+}
+
+// Función global de pausa
 function pausarTodoPorOrientacion() {
   orientationWarning.style.display = 'flex';
-  body.classList.add('pausar-animaciones');
+  document.body.style.pointerEvents = 'none';
 
-  // Pausar música
   if (musica && !musica.paused) {
     musica.pause();
     musicaPausadaPorOrientacion = true;
   }
 
-  // Pausar escritura
-  animacionesPausadas = true;
-
-  // Detener animaciones con estilo
-  document.querySelectorAll("*").forEach(el => {
-    el.style.animationPlayState = "paused";
-    el.style.transition = "none";
-  });
-
-  // Evitar interacción
-  document.body.style.pointerEvents = 'none';
+  pausarAnimacionesCSS();
+  pausarEscrituraMaquina();
 }
 
-// ===============================
-// REANUDAR AL VOLVER A HORIZONTAL
-// ===============================
-
+// Función global de reanudación
 function reanudarTodoPorOrientacion() {
   orientationWarning.style.display = 'none';
-  body.classList.remove('pausar-animaciones');
-
-  // Restaurar interacción
   document.body.style.pointerEvents = 'auto';
 
-  // Reanudar música si estaba pausada por orientación
   if (musicaPausadaPorOrientacion && musica) {
     try {
       musica.play();
@@ -756,27 +801,13 @@ function reanudarTodoPorOrientacion() {
     musicaPausadaPorOrientacion = false;
   }
 
-  // Reanudar escritura
-  animacionesPausadas = false;
-
-  if (escrituraActiva && intervaloEscritura === null) {
-    iniciarEscritura(contenidoEscritura);
-  }
-
-  // Restaurar animaciones
-  document.querySelectorAll("*").forEach(el => {
-    el.style.animationPlayState = "running";
-    el.style.transition = "";
-  });
+  reanudarAnimacionesCSS();
+  reanudarEscrituraMaquina();
 }
 
-// ===============================
-// VERIFICAR ORIENTACIÓN
-// ===============================
-
+// Verifica si está en modo vertical y aplica lógica
 function verificarOrientacion() {
   const esVertical = window.innerHeight > window.innerWidth;
-
   if (esVertical) {
     pausarTodoPorOrientacion();
   } else {
@@ -784,10 +815,7 @@ function verificarOrientacion() {
   }
 }
 
-// ===============================
-// EVENTOS
-// ===============================
-
+// Eventos que detectan orientación del dispositivo
 window.addEventListener("load", verificarOrientacion);
 window.addEventListener("resize", verificarOrientacion);
 window.addEventListener("orientationchange", verificarOrientacion);
