@@ -1,66 +1,57 @@
-//
-// URL directa del video desde Google Drive
-const videoURL = "https://drive.google.com/uc?export=download&id=1i9bWb61Mvp96kVtiqHUkdpWeCmMQagkq";
+// Elementos clave
+const orientationWarning = document.getElementById('orientation-warning');
+const orientationVideo = document.getElementById('orientacionVideo');
+const body = document.body;
+const musica = document.getElementById('bg-music');
 
-// Referencias
-const orientationWarning = document.getElementById("orientation-warning");
-const orientationVideo = document.getElementById("orientation-video");
-
-// Variables de estado
 let musicaPausadaPorOrientacion = false;
-let animacionesPausadas = false;
 
-// Pausa todo (llámala cuando se muestre la advertencia)
+// Función para pausar todo al estar en vertical
 function pausarTodoPorOrientacion() {
-    // Pausar música
-    if (typeof backgroundMusic !== "undefined" && !backgroundMusic.paused) {
-        backgroundMusic.pause();
-        musicaPausadaPorOrientacion = true;
-    }
+  orientationWarning.style.display = 'flex';
+  body.classList.add('pausar-animaciones');
 
-    // Detener animaciones CSS (añadir clase o eliminar animaciones)
-    document.body.classList.add("pausar-animaciones");
-    animacionesPausadas = true;
+  if (musica && !musica.paused) {
+    musica.pause();
+    musicaPausadaPorOrientacion = true;
+  }
 
-    // Mostrar capa de advertencia
-    orientationWarning.style.display = "flex";
-
-    // Cargar video (solo una vez)
-    if (!orientationVideo.src) {
-        orientationVideo.src = videoURL;
-    }
+  document.body.style.pointerEvents = 'none'; // Bloquear interacción
 }
 
-// Reanuda todo cuando se gire horizontal
+// Función para reanudar al volver a horizontal
 function reanudarTodoPorOrientacion() {
-    // Reanudar música si se pausó
-    if (musicaPausadaPorOrientacion && typeof backgroundMusic !== "undefined") {
-        backgroundMusic.play();
-        musicaPausadaPorOrientacion = false;
+  orientationWarning.style.display = 'none';
+  body.classList.remove('pausar-animaciones');
+
+  document.body.style.pointerEvents = 'auto'; // Restaurar interacción
+
+  if (musicaPausadaPorOrientacion && musica) {
+    try {
+      musica.play();
+    } catch (e) {
+      // Algunas políticas de autoplay podrían bloquearlo
+      console.warn("La música no se pudo reproducir automáticamente:", e);
     }
-
-    // Reanudar animaciones
-    document.body.classList.remove("pausar-animaciones");
-    animacionesPausadas = false;
-
-    // Ocultar advertencia
-    orientationWarning.style.display = "none";
+    musicaPausadaPorOrientacion = false;
+  }
 }
 
-// Verificar orientación
+// Verifica orientación actual y aplica lógica
 function verificarOrientacion() {
-    const orientacionEsVertical = window.innerHeight > window.innerWidth;
-    if (orientacionEsVertical) {
-        pausarTodoPorOrientacion();
-    } else {
-        reanudarTodoPorOrientacion();
-    }
+  const esVertical = window.innerHeight > window.innerWidth;
+
+  if (esVertical) {
+    pausarTodoPorOrientacion();
+  } else {
+    reanudarTodoPorOrientacion();
+  }
 }
 
-// Listener inicial
+// Detectar cambios de orientación
+window.addEventListener("load", verificarOrientacion);
 window.addEventListener("resize", verificarOrientacion);
 window.addEventListener("orientationchange", verificarOrientacion);
-window.addEventListener("load", verificarOrientacion);
 
 ///////////////////////////////////Abajo esta lo original//////////////////////////////////////////////////////////////////////
 
