@@ -1,19 +1,30 @@
-  #orientation-warning {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: black;
-    color: white;
-    font-size: 24px;
-    z-index: 999999; /* mayor que cualquier otra pantalla */
-    display: none;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding: 20px;
-  }
+#orientation-warning {
+  position: fixed;
+  z-index: 99999;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.orientation-overlay {
+  text-align: center;
+  color: white;
+  font-size: 1.5rem;
+  pointer-events: none;
+}
+
+.orientation-overlay video {
+  max-width: 80vw;
+  max-height: 40vh;
+  margin-bottom: 20px;
+  pointer-events: none;
+}
+
 
 #start-screen {
         position: fixed;
