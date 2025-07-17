@@ -57,21 +57,28 @@
 
 // Control de la experiencia principal
 // === VARIABLES GLOBALES NECESARIAS ===
+// VARIABLES DE ORIENTACIÓN
+// Variables para control de orientación
+let orientationWarning, orientationVideo, body, musica;
 let musicaPausadaPorOrientacion = false;
 let animacionesPausadas = false;
 let escrituraActiva = false;
 let intervaloEscritura = null;
 let contenidoEscritura = "";
 
-let orientationWarning, orientationVideo, body, musica;
 
-// Esperar a que el DOM esté listo para acceder a los elementos
-window.addEventListener("DOMContentLoaded", () => {
-  orientationWarning = document.getElementById('orientation-warning');
-  orientationVideo = document.getElementById('orientacionVideo');
-  body = document.body;
-  musica = document.getElementById('bg-music');
+// ESPERAR AL DOM PARA EVITAR ERRORES
+document.addEventListener('DOMContentLoaded', () => {
+    orientationWarning = document.getElementById('orientation-warning');
+    orientationVideo = document.getElementById('orientacionVideo');
+    body = document.body;
+    musica = document.getElementById('bg-music');
+
+    manejarOrientacion(); // Verificar al cargar
+    window.addEventListener("orientationchange", manejarOrientacion);
+    window.addEventListener("resize", manejarOrientacion);
 });
+
 
 
 function startMainExperience() {
@@ -685,16 +692,16 @@ function playBackgroundMusic() {
 // CONFIGURACIÓN INICIAL
 // ===============================
 
-const orientationWarning = document.getElementById('orientation-warning');
-const orientationVideo = document.getElementById('orientacionVideo');
-const body = document.body;
-const musica = document.getElementById('bg-music');
+orientationWarning = document.getElementById('orientation-warning');
+orientationVideo = document.getElementById('orientacionVideo');
+body = document.body;
+musica = document.getElementById('bg-music');
 
-let musicaPausadaPorOrientacion = false;
-let animacionesPausadas = false;
-let escrituraActiva = false;
-let intervaloEscritura = null;
-let contenidoEscritura = "";
+
+
+
+
+
 let indiceEscritura = 0;
 
 const elementoTexto = document.getElementById("dedicatoria"); // Ajusta si tu ID es otro
@@ -730,9 +737,9 @@ function iniciarEscritura(textoCompleto) {
 
 // === BLOQUE DE ORIENTACIÓN Y PAUSA GLOBAL ===
 
-let musicaPausadaPorOrientacion = false;
-let animacionesPausadas = false;
-let escrituraActiva = false;
+
+
+
 
 // Función para pausar animaciones CSS
 function pausarAnimacionesCSS() {
@@ -774,51 +781,146 @@ function reanudarEscrituraMaquina() {
 }
 
 // Función global de pausa
-function pausarTodoPorOrientacion() {
-  orientationWarning.style.display = 'flex';
-  document.body.style.pointerEvents = 'none';
+function manejarOrientacion() {
+  const esVertical = window.innerHeight > window.innerWidth;
 
-  if (musica && !musica.paused) {
-    musica.pause();
-    musicaPausadaPorOrientacion = true;
-  }
-
-  pausarAnimacionesCSS();
-  pausarEscrituraMaquina();
-}
-
-// Función global de reanudación
-function reanudarTodoPorOrientacion() {
-  orientationWarning.style.display = 'none';
-  document.body.style.pointerEvents = 'auto';
-
-  if (musicaPausadaPorOrientacion && musica) {
-    try {
-      musica.play();
-    } catch (e) {
-      console.warn("La música no se pudo reproducir automáticamente:", e);
+  if (esVertical) {
+    // Mostrar la alerta de orientación (el div con el video)
+    orientationWarning.style.display = 'flex';
+    if (orientationVideo) {
+      orientationVideo.style.display = 'block';
+      orientationVideo.play();
     }
-    musicaPausadaPorOrientacion = false;
-  }
 
-  reanudarAnimacionesCSS();
-  reanudarEscrituraMaquina();
+    // Pausar música
+    if (musica && !musica.paused) {
+      musica.pause();
+      musicaPausadaPorOrientacion = true;
+    }
+
+    // Pausar animaciones CSS: se recorre el DOM y se setea animationPlayState a "paused"
+    document.querySelectorAll("*").forEach(el => {
+      el.style.animationPlayState = "paused";
+    });
+    animacionesPausadas = true;
+
+    // Pausar la escritura tipo máquina: si existe un intervalo, se limpia
+    if (intervaloEscritura) {
+      clearInterval(intervaloEscritura);
+      // Aquí se asume que la variable 'escrituraActiva' queda en true para indicar que se pausó
+      escrituraActiva = true;
+    }
+
+    // Bloquear interacción táctil
+    body.style.pointerEvents = 'none';
+  } else {
+    // Ocultar la alerta de orientación
+    orientationWarning.style.display = 'none';
+    if (orientationVideo) {
+      orientationVideo.pause();
+      orientationVideo.style.display = 'none';
+      orientationVideo.currentTime = 0;
+    }
+
+    // Reanudar música si estaba pausada por orientación
+    if (musica && musicaPausadaPorOrientacion) {
+      try {
+        musica.play();
+      } catch (e) {
+        console.warn("La música no se pudo reanudar automáticamente:", e);
+      }
+      musicaPausadaPorOrientacion = false;
+    }
+
+    // Reanudar animaciones CSS: restaurar el play state a "running"
+    document.querySelectorAll("*").forEach(el => {
+      el.style.animationPlayState = "running";
+    });
+    animacionesPausadas = false;
+
+    // Reanudar la escritura tipo máquina (llamando a la función que se encarga de ella)
+    if (escrituraActiva && contenidoEscritura && !intervaloEscritura) {
+      iniciarEscritura(contenidoEscritura);
+      escrituraActiva = false;
+    }
+
+    // Restaurar interacción táctil
+    body.style.pointerEvents = 'auto';
+  }
 }
 
-// Verifica si está en modo vertical y aplica lógica
 function verificarOrientacion() {
   const esVertical = window.innerHeight > window.innerWidth;
   if (esVertical) {
-    pausarTodoPorOrientacion();
+    manejarOrientacion();
   } else {
-    reanudarTodoPorOrientacion();
+    manejarOrientacion();
   }
 }
 
-// Eventos que detectan orientación del dispositivo
 window.addEventListener("load", verificarOrientacion);
 window.addEventListener("resize", verificarOrientacion);
 window.addEventListener("orientationchange", verificarOrientacion);
+
+
+function manejarOrientacion() {
+    const esVertical = window.innerHeight > window.innerWidth;
+
+    if (esVertical) {
+        if (orientationWarning) orientationWarning.style.display = 'flex';
+        if (orientationVideo) {
+            orientationVideo.style.display = 'block';
+            orientationVideo.play();
+        }
+
+        // Pausar música si se está reproduciendo
+        if (musica && !musica.paused) {
+            musica.pause();
+            musicaPausadaPorOrientacion = true;
+        }
+
+        // Pausar animaciones (congelar el tiempo CSS)
+        if (!animacionesPausadas) {
+            document.querySelectorAll("*").forEach(el => {
+                el.dataset.originalAnimation = el.style.animationPlayState;
+                el.style.animationPlayState = "paused";
+            });
+            animacionesPausadas = true;
+        }
+
+        // Pausar escritura
+        if (intervaloEscritura) {
+            clearInterval(intervaloEscritura);
+            intervaloEscritura = null;
+        }
+
+    } else {
+        if (orientationWarning) orientationWarning.style.display = 'none';
+        if (orientationVideo) {
+            orientationVideo.pause();
+            orientationVideo.style.display = 'none';
+        }
+
+        // Reanudar música si fue pausada por orientación
+        if (musica && musicaPausadaPorOrientacion) {
+            musica.play();
+            musicaPausadaPorOrientacion = false;
+        }
+
+        // Reanudar animaciones
+        if (animacionesPausadas) {
+            document.querySelectorAll("*").forEach(el => {
+                el.style.animationPlayState = el.dataset.originalAnimation || "running";
+            });
+            animacionesPausadas = false;
+        }
+
+        // Reanudar escritura si había contenido pendiente
+        if (contenidoEscritura && !intervaloEscritura) {
+            escribirTexto(contenidoEscritura);
+        }
+    }
+}
 
 
 
