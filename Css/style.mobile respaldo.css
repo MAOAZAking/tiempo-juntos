@@ -1,0 +1,226 @@
+/* Reglas generales */
+body {
+  font-size: 16px;
+    overflow-x: auto;  /* Solo desplazamiento horizontal si es necesario */
+    overflow-y: scroll; /* Siempre mostrar desplazamiento vertical */
+    touch-action: auto; /* Permitir el desplazamiento en todas direcciones */
+    -webkit-overflow-scrolling: touch; /* Habilitar el desplazamiento suave en iOS */
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.tree-container {
+  width: 92vw !important;
+  height: 62vw !important;
+  max-width: 98vw;
+  max-height: 80vw;
+  min-width: 180px;
+  min-height: 180px;
+  position: absolute;
+  top: 48%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+}
+
+.tree-container svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.tree-container svg.move-and-scale {
+  transition: transform 1.2s cubic-bezier(.77,0,.18,1);
+  /* Mueve hacia abajo en caso de los celualares */
+  transform: translateY(60px) scale(1.18);
+}
+
+.dedication-text {
+  position: absolute;
+  top: 7vw;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 90vw;
+  min-width: 240px;
+  font-size: 4vw;
+  text-align: center;
+  color: #000000;
+  font-family: 'Courier New', Courier, monospace;
+  white-space: pre-line;
+  z-index: 3;
+  opacity: 0;
+  pointer-events: none;
+  max-height: 80vh; /* Limita la altura máxima en la orientación vertical */
+  width: 100%; /* Aseguramos que ocupe todo el ancho disponible */
+  height: 100%; /* Lo mismo con la altura */
+  overflow: auto; /* Permite scroll tanto en vertical como horizontal */
+  -webkit-overflow-scrolling: touch; /* Habilita el scroll suave en iOS */
+  display: block; /* Asegura que se comporte como un bloque */
+  box-sizing: border-box; /* Asegura que el padding no interfiera con el tamaño del contenedor */
+}
+
+
+.signature {
+  position: static;
+  display: block;
+  margin: 2.2em auto 0 auto;
+  left: auto;
+  bottom: auto;
+  transform: none;
+  font-size: 1.5rem;
+  color: #e60026;
+  opacity: 0;
+  z-index: 5;
+  white-space: pre;
+  pointer-events: none;
+  transition: opacity 0.7s;
+  text-align: center;
+}
+
+@media screen and (orientation: portrait) {
+  /* Cuando la pantalla está en orientación vertical */
+  .dedication-text {
+    overflow-y: scroll; /* Asegura scroll vertical */
+    overflow-x: hidden; /* Deshabilita el scroll horizontal */
+  }
+}
+
+@media screen and (orientation: landscape) {
+  /* Cuando la pantalla está en orientación horizontal */
+  .dedication-text {
+    overflow-y: hidden; /* Deshabilita el scroll vertical */
+    overflow-x: scroll; /* Permite scroll horizontal */
+  }
+}
+
+/* Adaptación para pantallas más pequeñas (móviles) */
+@media (max-width: 600px) {
+    body {
+        overflow: auto; /* Permite desplazamiento en ambas direcciones */
+    }
+
+    /* Adaptación de la firma */
+    .signature {
+        font-size: 1.1rem;
+        padding: 1em;
+    }
+
+    /* Dedicatoria */
+    .dedication-text {
+        position: absolute;
+        top: 10vh; /* Espacio superior para evitar que el texto se pegue al borde */
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 1.1rem; /* Mantuve el tamaño más legible */
+        max-width: 90vw; /* Combinación entre ambos */
+        max-height: 80vh;
+        width: 100%;
+        height: 100%;
+        overflow: auto; /* Permite scroll en ambas direcciones */
+        -webkit-overflow-scrolling: touch; /* Scroll suave en iOS */
+        display: block;
+        box-sizing: border-box;
+        padding: 1em;
+    }
+
+    /* Contenedor de árbol */
+    .tree-container {
+        width: 75vw;
+        height: 75vw;
+    }
+
+    /* Estilos del contador de cuenta regresiva */
+    .countdown {
+        position: fixed;
+        left: 50%;
+        bottom: 10vw;
+        transform: translateX(-50%) translateY(30px);
+        font-size: 0.98rem;
+        min-width: 60vw;
+        max-width: 92vw;
+        text-align: center;
+        padding: 0.5em 0.7em;
+        border-radius: 1em;
+        background: #fff8;
+        box-shadow: 0 2px 8px #e6002611;
+        z-index: 6;
+        pointer-events: none;
+        letter-spacing: 0.05em;
+        transition: opacity 0.8s cubic-bezier(.77,0,.18,1), transform 0.8s cubic-bezier(.77,0,.18,1);
+        opacity: 0;
+    }
+
+    .countdown.visible {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+
+
+@media (orientation: portrait) {
+  body {
+    overflow-y: auto;  /* Permitir desplazamiento vertical */
+    height: 100vh; /* Ajusta la altura del body en pantalla vertical */
+  }
+
+  .dedication-text {
+    max-height: 80vh;  /* Limitar la altura del contenedor para que no se desborde */
+    height: auto;      /* Ajusta la altura dependiendo del contenido */
+    font-size: 4vw;    /* Tamaño de fuente adecuado en orientación vertical */
+  }
+
+  .countdown {
+    bottom: 8vw;  /* Ajuste la posición del contador en orientación vertical */
+  }
+}
+
+@media (orientation: landscape) {
+  body {
+    overflow-x: auto;  /* Permitir desplazamiento horizontal en pantallas horizontales */
+  }
+
+  .dedication-text {
+    max-height: 60vh;  /* Ajuste la altura máxima del contenedor en orientación horizontal */
+    height: auto;      /* Ajusta la altura dependiendo del contenido */
+    font-size: 3vw;    /* Tamaño de fuente adecuado en orientación horizontal */
+  }
+
+  .countdown {
+    bottom: 6vw;  /* Ajuste la posición del contador en orientación horizontal */
+  }
+}
+
+
+.countdown {
+  position: fixed;
+  left: 50%;
+  bottom: 10vw;
+  transform: translateX(-50%);
+  font-size: 0.98rem;
+  min-width: 60vw;
+  max-width: 92vw;
+  text-align: center;
+  padding: 0.5em 0.7em;
+  border-radius: 1em;
+  background: #fff8;
+  box-shadow: 0 2px 8px #e6002611;
+  z-index: 6;
+  pointer-events: none;
+  letter-spacing: 0.05em;
+  transition: opacity 0.8s cubic-bezier(.77,0,.18,1), transform 0.8s cubic-bezier(.77,0,.18,1);
+  opacity: 0;
+  transform: translateX(-50%) translateY(30px);
+}
+
+.countdown.visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Pétalos flotantes ajustados para móvil */
+.floating-petal {
+    width: 13px;
+    height: 18px;
+}
