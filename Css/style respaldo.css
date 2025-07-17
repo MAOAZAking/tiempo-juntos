@@ -1,4 +1,52 @@
-      #start-screen {
+/* --- Alerta de orientación vertical --- */
+/* ALERTA DE ORIENTACIÓN */
+#orientation-warning {
+  position: fixed;
+  z-index: 99999;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  pointer-events: all;
+}
+
+.orientation-overlay {
+  text-align: center;
+  color: white;
+  font-size: 1.5rem;
+  pointer-events: none;
+}
+
+.orientation-overlay video {
+  max-width: 80vw;
+  max-height: 40vh;
+  margin-bottom: 20px;
+  pointer-events: none;
+}
+
+/* PAUSAR TODAS LAS ANIMACIONES Y TRANSICIONES */
+body.pausar-animaciones * {
+  animation-play-state: paused !important;
+  transition: none !important;
+}
+
+/* PAUSAR animaciones SVG si están dentro de <svg> y usan <animate> */
+body.pausar-animaciones svg animate {
+  display: none !important;
+}
+
+/* Opcional: evitar scroll o zoom mientras está activa la advertencia */
+body.pausar-animaciones {
+  overflow: hidden !important;
+  touch-action: none !important;
+}
+
+#start-screen {
         position: fixed;
         top: 0;
         left: 0;
