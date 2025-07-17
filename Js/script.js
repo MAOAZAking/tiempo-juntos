@@ -55,24 +55,65 @@
 
 ///////////////////////////////////Abajo esta lo original//////////////////////////////////////////////////////////////////////
 
-// Control de la experiencia principal
-// === VARIABLES GLOBALES NECESARIAS ===
+// Elementos clave
+const orientationWarning = document.getElementById('orientation-warning');
+const orientationVideo = document.getElementById('orientacionVideo');
+const body = document.body;
+const musica = document.getElementById('bg-music');
+
 let musicaPausadaPorOrientacion = false;
-let animacionesPausadas = false;
-let escrituraActiva = false;
-let intervaloEscritura = null;
-let contenidoEscritura = "";
 
-let orientationWarning, orientationVideo, body, musica;
+// Función para pausar todo al estar en vertical
+function pausarTodoPorOrientacion() {
+  orientationWarning.style.display = 'flex';
+  body.classList.add('pausar-animaciones');
 
-// Esperar a que el DOM esté listo para acceder a los elementos
-window.addEventListener("DOMContentLoaded", () => {
-  orientationWarning = document.getElementById('orientation-warning');
-  orientationVideo = document.getElementById('orientacionVideo');
-  body = document.body;
-  musica = document.getElementById('bg-music');
-});
+  if (musica && !musica.paused) {
+    musica.pause();
+    musicaPausadaPorOrientacion = true;
+  }
 
+  document.body.style.pointerEvents = 'none'; // Bloquear interacción
+}
+
+// Función para reanudar al volver a horizontal
+function reanudarTodoPorOrientacion() {
+  orientationWarning.style.display = 'none';
+  body.classList.remove('pausar-animaciones');
+
+  document.body.style.pointerEvents = 'auto'; // Restaurar interacción
+
+  if (musicaPausadaPorOrientacion && musica) {
+    try {
+      musica.play();
+    } catch (e) {
+      // Algunas políticas de autoplay podrían bloquearlo
+      console.warn("La música no se pudo reproducir automáticamente:", e);
+    }
+    musicaPausadaPorOrientacion = false;
+  }
+}
+
+// Verifica orientación actual y aplica lógica
+function verificarOrientacion() {
+  const esVertical = window.innerHeight > window.innerWidth;
+
+  if (esVertical) {
+    pausarTodoPorOrientacion();
+  } else {
+    reanudarTodoPorOrientacion();
+  }
+}
+
+// Detectar cambios de orientación
+window.addEventListener("load", verificarOrientacion);
+window.addEventListener("resize", verificarOrientacion);
+window.addEventListener("orientationchange", verificarOrientacion);
+
+///////////////////////////////////Abajo esta lo original//////////////////////////////////////////////////////////////////////
+
+// Control de la experiencia principal
+let mainExperienceStarted = false;
 
 function startMainExperience() {
   if (mainExperienceStarted) return;
@@ -107,7 +148,7 @@ fetch('Img/treelove-new.svg')
     // Forzar reflow y luego animar
     setTimeout(() => {
       allPaths.forEach((path, i) => {
-        path.style.transition = `stroke-dashoffset 1.2s cubic-bezier(.77,0,.18,1) ${i * 0.08}s, fill-opacity 0.5s ${0.9 + i * 0.08}s`;
+        path.style.transition = stroke-dashoffset 1.2s cubic-bezier(.77,0,.18,1) ${i * 0.08}s, fill-opacity 0.5s ${0.9 + i * 0.08}s;
         path.style.strokeDashoffset = 0;
         setTimeout(() => {
           path.style.fillOpacity = '1';
@@ -175,7 +216,7 @@ function startFloatingObjects() {
 
   // Simular movimiento de los objetos flotantes (pétalos, etc.)
   setInterval(() => {
-    petal.style.transform = `translate(${Math.random() * window.innerWidth}px, ${Math.random() * window.innerHeight}px)`;
+    petal.style.transform = translate(${Math.random() * window.innerWidth}px, ${Math.random() * window.innerHeight}px);
   }, 2000);
 }
 
@@ -283,7 +324,7 @@ function showDedicationText() {
   
   if (!text) {
     // Ahora agregamos la propiedad data-emoji para crear el duplicado
-    text = `<span class="red-text">Para:</span><span class="emoji-border" data-emoji="🩵">🩵</span><span class="emoji-border" data-emoji="😍">😍</span><span class="texto-resaltado">Mi Amorcito Lindo</span><span class="emoji-border" data-emoji="😘">😘</span><span class="emoji-border" data-emoji="🤍">🤍</span>\n
+    text = <span class="red-text">Para:</span><span class="emoji-border" data-emoji="🩵">🩵</span><span class="emoji-border" data-emoji="😍">😍</span><span class="texto-resaltado">Mi Amorcito Lindo</span><span class="emoji-border" data-emoji="😘">😘</span><span class="emoji-border" data-emoji="🤍">🤍</span>\n
     No hay distancia que nos separe, ni reloj que el fin marque;
 
     mi amor por ti sigue intacto, aunque en silencio yo me encuentre aquí.
@@ -328,7 +369,7 @@ function showDedicationText() {
     
     pero en mi corazón sigues siendo mi todo,
     
-    y mi amor por ti nunca será un olvido..`;
+    y mi amor por ti nunca será un olvido..;
   } else {
     text = decodeURIComponent(text).replace(/\\n/g, '\n');
   }
@@ -387,7 +428,7 @@ function showSignature() {
   const defaultSignature = "De: Tu Ángel"; // Cambié esto a "De: Tu Ángel" como ejemplo
 
   // Crea los elementos que se mostrarán en la firma
-  const fullSignature = firma ? decodeURIComponent(firma) : `${defaultText}\n${defaultSignature}`;
+  const fullSignature = firma ? decodeURIComponent(firma) : ${defaultText}\n${defaultSignature};
 
   // Dividir el texto en dos partes: el mensaje de amor y la firma
   const parts = fullSignature.split("\n");
@@ -434,8 +475,8 @@ function startFloatingObjects() {
     let el = document.createElement('div');
     el.className = 'floating-petal';
     // Posición inicial
-    el.style.left = `${Math.random() * 90 + 2}%`;
-    el.style.top = `${100 + Math.random() * 10}%`;
+    el.style.left = ${Math.random() * 90 + 2}%;
+    el.style.top = ${100 + Math.random() * 10}%;
     el.style.opacity = 0.7 + Math.random() * 0.3;
     container.appendChild(el);
 
@@ -443,8 +484,8 @@ function startFloatingObjects() {
     const duration = 6000 + Math.random() * 4000;
     const drift = (Math.random() - 0.5) * 60;
     setTimeout(() => {
-      el.style.transition = `transform ${duration}ms linear, opacity 1.2s`;
-      el.style.transform = `translate(${drift}px, -110vh) scale(${0.8 + Math.random() * 0.6}) rotate(${Math.random() * 360}deg)`;
+      el.style.transition = transform ${duration}ms linear, opacity 1.2s;
+      el.style.transform = translate(${drift}px, -110vh) scale(${0.8 + Math.random() * 0.6}) rotate(${Math.random() * 360}deg);
       el.style.opacity = 0.2;
     }, 30);
 
@@ -478,7 +519,7 @@ function showCountdown() {
 
     // Actualiza el contenido del contenedor con el tiempo transcurrido
     container.innerHTML =
-      `Llevamos juntos: <b>${days}d ${hours}h ${minutes}m ${seconds}s</b>`;
+      Llevamos juntos: <b>${days}d ${hours}h ${minutes}m ${seconds}s</b>;
     
     // Hace visible el contenedor (en caso de que tuviera alguna animación o estilo)
     container.classList.add('visible');
@@ -680,133 +721,6 @@ function playBackgroundMusic() {
     };
   }
 }
-
-// ===============================
-// CONFIGURACIÓN INICIAL
-// ===============================
-
-let indiceEscritura = 0;
-
-const elementoTexto = document.getElementById("dedicatoria"); // Ajusta si tu ID es otro
-
-// ===============================
-// ESCRITURA TIPO MÁQUINA
-// ===============================
-
-function iniciarEscritura(textoCompleto) {
-  contenidoEscritura = textoCompleto;
-  indiceEscritura = 0;
-  escrituraActiva = true;
-  elementoTexto.innerHTML = "";
-
-  intervaloEscritura = setInterval(() => {
-    if (indiceEscritura < contenidoEscritura.length && !animacionesPausadas) {
-      elementoTexto.innerHTML += contenidoEscritura.charAt(indiceEscritura);
-      indiceEscritura++;
-    } else {
-      clearInterval(intervaloEscritura);
-      escrituraActiva = false;
-    }
-  }, 100);
-}
-
-// Llama esta función después de mostrar la carta, por ejemplo:
-// iniciarEscritura("Querida mamá, gracias por todo tu amor...");
-
-
-// ===============================
-// PAUSA GENERAL POR ORIENTACIÓN
-// ===============================
-
-// === BLOQUE DE ORIENTACIÓN Y PAUSA GLOBAL ===
-
-// Función para pausar animaciones CSS
-function pausarAnimacionesCSS() {
-  document.querySelectorAll("*").forEach(el => {
-    const anim = window.getComputedStyle(el).animationPlayState;
-    if (anim === "running") {
-      el.dataset.originalAnimation = "running";
-      el.style.animationPlayState = "paused";
-    }
-  });
-  animacionesPausadas = true;
-}
-
-// Función para reanudar animaciones CSS
-function reanudarAnimacionesCSS() {
-  document.querySelectorAll("*").forEach(el => {
-    if (el.dataset.originalAnimation === "running") {
-      el.style.animationPlayState = "running";
-      delete el.dataset.originalAnimation;
-    }
-  });
-  animacionesPausadas = false;
-}
-
-// Función para pausar escritura máquina (si está activa)
-function pausarEscrituraMaquina() {
-  if (typeof pausarEscritura === 'function') {
-    pausarEscritura();
-    escrituraActiva = true;
-  }
-}
-
-// Función para reanudar escritura máquina (si se pausó)
-function reanudarEscrituraMaquina() {
-  if (escrituraActiva && typeof reanudarEscritura === 'function') {
-    reanudarEscritura();
-    escrituraActiva = false;
-  }
-}
-
-// Función global de pausa
-function pausarTodoPorOrientacion() {
-  orientationWarning.style.display = 'flex';
-  document.body.style.pointerEvents = 'none';
-
-  if (musica && !musica.paused) {
-    musica.pause();
-    musicaPausadaPorOrientacion = true;
-  }
-
-  pausarAnimacionesCSS();
-  pausarEscrituraMaquina();
-}
-
-// Función global de reanudación
-function reanudarTodoPorOrientacion() {
-  orientationWarning.style.display = 'none';
-  document.body.style.pointerEvents = 'auto';
-
-  if (musicaPausadaPorOrientacion && musica) {
-    try {
-      musica.play();
-    } catch (e) {
-      console.warn("La música no se pudo reproducir automáticamente:", e);
-    }
-    musicaPausadaPorOrientacion = false;
-  }
-
-  reanudarAnimacionesCSS();
-  reanudarEscrituraMaquina();
-}
-
-// Verifica si está en modo vertical y aplica lógica
-function verificarOrientacion() {
-  const esVertical = window.innerHeight > window.innerWidth;
-  if (esVertical) {
-    pausarTodoPorOrientacion();
-  } else {
-    reanudarTodoPorOrientacion();
-  }
-}
-
-// Eventos que detectan orientación del dispositivo
-window.addEventListener("load", verificarOrientacion);
-window.addEventListener("resize", verificarOrientacion);
-window.addEventListener("orientationchange", verificarOrientacion);
-
-
 
 //########################################Codigo original de respaldo########################################
 
